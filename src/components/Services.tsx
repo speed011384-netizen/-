@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { 
   Stethoscope, Scissors, Plane, MapPin, Heart, 
-  CheckCircle2, Sparkles, UserCheck, ShieldAlert 
+  CheckCircle2, Sparkles, UserCheck, ShieldAlert, MessageCircle
 } from 'lucide-react';
 import { useState } from 'react';
 import { SERVICES } from '../data';
@@ -112,12 +112,15 @@ export default function Services({ setActiveTab }: ServicesProps) {
             >
               실시간 예상 요금 계산
             </button>
-            <button
-              onClick={() => setActiveTab('contact')}
-              className="w-full sm:w-auto bg-brand-yellow text-gray-950 hover:bg-brand-yellow-hover px-6 py-3.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5"
+            <a
+              href="https://talk.naver.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto bg-[#03c75a] text-white hover:bg-[#02b350] px-6 py-3.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              간편 예약 신청하기
-            </button>
+              <MessageCircle className="w-4 h-4 fill-white text-white" />
+              네이버 톡톡 상담하기
+            </a>
           </div>
         </div>
 
@@ -155,10 +158,7 @@ export default function Services({ setActiveTab }: ServicesProps) {
             <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900">
               보호자 비동승 단독 안심 픽업 케어 서비스
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
-              바쁜 일정, 병원 정기 수액 치료 등 보호자 동행이 어려운 상황을 위해 준비되었습니다. <br />
-              기사님이 1:1 전담 도우미가 되어 약 처방 대행, 미용실 인수인계, 소변 체크 및 음수대 케어 후 상세 증서와 탑승 사진을 안심 알림톡으로 전송해 드립니다.
-            </p>
+
           </div>
           <div className="lg:col-span-4 bg-white rounded-2xl border border-gray-100 p-5 space-y-3 shadow-inner">
             <h4 className="font-extrabold text-xs text-gray-950">단독 픽업 보완 진행 사항</h4>
@@ -176,12 +176,14 @@ export default function Services({ setActiveTab }: ServicesProps) {
                 <span>도착 시: 인수인계 안전 확인 문자</span>
               </div>
             </div>
-            <button
-              onClick={() => setActiveTab('contact')}
-              className="w-full bg-brand-green-light hover:bg-brand-green/10 text-brand-green py-2.5 rounded-xl text-xs font-bold transition-all text-center"
+            <a
+              href="https://talk.naver.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-[#03c75a]/10 hover:bg-[#03c75a]/15 text-[#03c75a] py-2.5 rounded-xl text-xs font-bold transition-all text-center cursor-pointer"
             >
-              상담 예약 서식 작성
-            </button>
+              네이버 톡톡 1:1 상담
+            </a>
           </div>
         </div>
       </section>

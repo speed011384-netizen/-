@@ -1,12 +1,14 @@
-import { Phone, MessageCircle, Menu, X, PawPrint } from 'lucide-react';
+import { Phone, MessageCircle, Menu, X, PawPrint, Shield } from 'lucide-react';
 import { useState } from 'react';
+import { SiteConfig } from '../types';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  siteConfig: SiteConfig;
 }
 
-export default function Header({ activeTab, setActiveTab }: HeaderProps) {
+export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
@@ -16,7 +18,7 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
     { id: 'fare', label: '요금안내' },
     { id: 'reviews', label: '이용후기' },
     { id: 'photos', label: '운행사진' },
-    { id: 'contact', label: '문의하기' },
+    { id: 'admin', label: '관리자(CMS)' },
   ];
 
   return (
@@ -25,12 +27,12 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
       <div className="hidden md:flex justify-between items-center max-w-7xl mx-auto px-6 py-2 text-xs text-gray-500 border-b border-gray-50">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
-          <span>mans pet 안전 파수꾼 대기중 (24시간 상담)</span>
+          <span>manspet taxi 안전 드라이버 대기중 (24시간 상담)</span>
         </div>
         <div className="flex items-center gap-4">
           <span>평일/주말 상시 전용 매칭 보장</span>
           <span>|</span>
-          <span className="font-semibold text-gray-700">전화 접수: 010-7644-0799</span>
+          <span className="font-semibold text-gray-700">전화 접수: {siteConfig.phone}</span>
         </div>
       </div>
 
@@ -46,12 +48,12 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
           </div>
           <div>
             <div className="flex items-center gap-1">
-              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight text-brand-green">mans pet</span>
+              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight text-brand-green">manspet</span>
               <span className="text-gray-900 font-bold">♥</span>
-              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight">펫택시</span>
+              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight">taxi</span>
             </div>
             <p className="text-[9px] text-gray-400 font-display font-medium tracking-widest uppercase -mt-0.5">
-              Mans Pet Taxi
+              manspet taxi
             </p>
           </div>
         </div>
@@ -78,36 +80,38 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
         <div className="hidden sm:flex items-center gap-3">
           {/* Phone Call (Green) */}
           <a
-            href="tel:010-7644-0799"
+            href={`tel:${siteConfig.phone}`}
             className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-hover text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md"
             id="btn-call-header"
           >
             <Phone className="w-4 h-4 fill-white" />
             <div className="text-left leading-tight">
               <p className="text-[10px] opacity-95 font-normal">24시간 상담 예약</p>
-              <p className="text-xs font-bold tracking-tight">010-7644-0799</p>
+              <p className="text-xs font-bold tracking-tight">{siteConfig.phone}</p>
             </div>
           </a>
 
-          {/* Kakao Talk (Yellow) */}
-          <button
-            onClick={() => setActiveTab('contact')}
-            className="flex items-center gap-2 bg-brand-yellow hover:bg-brand-yellow-hover text-gray-900 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
-            id="btn-kakao-header"
+          {/* Naver TalkTalk (Green) */}
+          <a
+            href="https://talk.naver.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#03c75a] hover:bg-[#02b350] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
+            id="btn-naver-talktalk-header"
           >
-            <MessageCircle className="w-4 h-4 fill-gray-900 text-gray-900" />
+            <MessageCircle className="w-4 h-4 fill-white text-white" />
             <div className="text-left leading-tight">
-              <p className="text-[10px] text-gray-700 font-normal">카카오톡 상담하기</p>
+              <p className="text-[10px] text-emerald-100 font-normal">네이버 톡톡 상담하기</p>
               <p className="text-xs font-bold">실시간 간편 문의</p>
             </div>
-          </button>
+          </a>
         </div>
 
         {/* Mobile menu trigger */}
         <div className="flex lg:hidden items-center gap-2">
           {/* Mobile Phone Link */}
           <a
-            href="tel:010-7644-0799"
+            href={`tel:${siteConfig.phone}`}
             className="p-2.5 bg-brand-green text-white rounded-xl shadow-sm sm:hidden"
             id="btn-mobile-call"
           >
@@ -128,22 +132,24 @@ export default function Header({ activeTab, setActiveTab }: HeaderProps) {
         <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2 animate-fadeIn" id="mobile-drawer">
           <div className="grid grid-cols-2 gap-2 pb-3 mb-2 border-b border-gray-100">
             <a
-              href="tel:010-7644-0799"
+              href={`tel:${siteConfig.phone}`}
               className="flex items-center justify-center gap-2 bg-brand-green text-white py-3 rounded-xl text-xs font-bold"
             >
               <Phone className="w-4 h-4 fill-white" />
               전화 연결
             </a>
-            <button
+            <a
+              href="https://talk.naver.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => {
-                setActiveTab('contact');
                 setIsMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-2 bg-brand-yellow text-gray-900 py-3 rounded-xl text-xs font-bold"
+              className="flex items-center justify-center gap-2 bg-[#03c75a] text-white py-3 rounded-xl text-xs font-bold hover:bg-[#02b350]"
             >
-              <MessageCircle className="w-4 h-4 fill-gray-900" />
-              카톡 상담 신청
-            </button>
+              <MessageCircle className="w-4 h-4 fill-white text-white" />
+              네이버 톡톡 상담 신청
+            </a>
           </div>
           {menuItems.map((item) => (
             <button

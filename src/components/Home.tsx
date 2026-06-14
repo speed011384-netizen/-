@@ -1,25 +1,91 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   PawPrint, Phone, MessageCircle, ShieldCheck, Heart, 
   Sparkles, Clock, MapPin, Star, ArrowRight, UserPlus, 
   MessageSquare, MoreHorizontal, ShieldAlert, BadgeInfo,
-  Instagram, ExternalLink, Tv
+  Instagram, ExternalLink, Tv, Camera, Upload, Plus,
+  Trash2, RotateCcw, X
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SERVICES, ADVANTAGES, INITIAL_REVIEWS, GALLERY_PHOTOS } from '../data';
-import { Review } from '../types';
+import { Review, GalleryPhoto, SiteConfig } from '../types';
 import menzpetBanner from '../assets/images/menzpet_banner_1781229718829.jpg';
+import menzpetBannerWithCat from '../assets/images/menzpet_banner_with_cat_1781445861262.jpg';
+import menzpetBannerSmallDog from '../assets/images/menzpet_banner_small_dog_1781446007378.jpg';
+
+const bannerSlides = [
+  {
+    image: menzpetBanner,
+    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 골든 리트리버"
+  },
+  {
+    image: menzpetBannerWithCat,
+    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 강아지와 고양이 동행"
+  },
+  {
+    image: menzpetBannerSmallDog,
+    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 귀여운 반려견"
+  }
+];
 
 interface HomeProps {
   setActiveTab: (tab: string) => void;
   reviews: Review[];
+  photos?: GalleryPhoto[];
+  siteConfig?: SiteConfig;
 }
 
-export default function Home({ setActiveTab, reviews }: HomeProps) {
+export default function Home({ setActiveTab, reviews, photos = [], siteConfig }: HomeProps) {
   const [neighborCount, setNeighborCount] = useState(1234);
   const [hasAddedNeighbor, setHasAddedNeighbor] = useState(false);
   const [activePhotoCategory, setActivePhotoCategory] = useState<'all' | 'dog' | 'cat' | 'special'>('all');
   const [visitorCount, setVisitorCount] = useState(45678);
+  const [slides, setSlides] = useState(bannerSlides);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [isEditingBanners, setIsEditingBanners] = useState(false);
+
+  // Auto-rotate banner slides every 3 seconds
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentBannerIndex(prev => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  // Handle upload of new banner image(s) from user's device
+  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newSlides = [...slides];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const imageUrl = URL.createObjectURL(file);
+        newSlides.push({
+          image: imageUrl,
+          alt: `사용자 지정 배너 - ${file.name}`
+        });
+      }
+      setSlides(newSlides);
+      setCurrentBannerIndex(newSlides.length - 1); // Select the newly uploaded slide
+    }
+  };
+
+  // Delete a slide
+  const handleDeleteSlide = (indexToDelete: number) => {
+    if (slides.length <= 1) return;
+    const newSlides = slides.filter((_, i) => i !== indexToDelete);
+    setSlides(newSlides);
+    if (currentBannerIndex >= newSlides.length) {
+      setCurrentBannerIndex(newSlides.length - 1);
+    }
+  };
+
+  // Restore the original slides setup
+  const handleResetBanners = () => {
+    setSlides(bannerSlides);
+    setCurrentBannerIndex(0);
+  };
 
   // Increment visitors slightly on load to resemble active blog
   useEffect(() => {
@@ -37,9 +103,11 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
     }
   };
 
+  const displayPhotos = photos.length > 0 ? photos : GALLERY_PHOTOS;
+
   const filteredPhotos = activePhotoCategory === 'all' 
-    ? GALLERY_PHOTOS.slice(0, 6) 
-    : GALLERY_PHOTOS.filter(photo => photo.category === activePhotoCategory).slice(0, 6);
+    ? displayPhotos.slice(0, 6) 
+    : displayPhotos.filter(photo => photo.category === activePhotoCategory).slice(0, 6);
 
   return (
     <div className="space-y-12 pb-16" id="home-view">
@@ -110,12 +178,19 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
                 </div>
               </motion.div>
 
+              {/* Move '우리 아이의 안전한 동행' phrase directly above phone CTA buttons */}
+              <div className="text-center lg:text-left pt-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-brand-green border border-brand-green/20 rounded-lg text-sm font-black" id="premium-safe-companion-caption">
+                  ✨ 우리 아이의 안전한 동행
+                </span>
+              </div>
+
               {/* Huge CTAs matching colors of original image phone + kakaotalk */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start"
+                className="flex flex-col sm:flex-row gap-4 pt-1 justify-center lg:justify-start"
               >
                 {/* Phone Green CTA button */}
                 <a
@@ -130,18 +205,20 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
                   </div>
                 </a>
 
-                {/* Kakao Yellow CTA button */}
-                <button
-                  onClick={() => setActiveTab('contact')}
-                  className="flex items-center justify-center gap-3 bg-brand-yellow hover:bg-brand-yellow-hover text-gray-900 px-7 py-4 rounded-2xl font-bold shadow-lg shadow-yellow-500/10 hover:shadow-xl transition-all cursor-pointer group"
-                  id="hero-btn-kakao"
+                {/* Naver TalkTalk Green CTA button */}
+                <a
+                  href="https://talk.naver.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 bg-[#03c75a] hover:bg-[#02b350] text-white px-7 py-4 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group"
+                  id="hero-btn-naver-talktalk"
                 >
-                  <MessageCircle className="w-5 h-5 fill-gray-900 text-gray-900" />
+                  <MessageCircle className="w-5 h-5 fill-white text-white group-hover:scale-105 transition-transform" />
                   <div className="text-left">
-                    <p className="text-lg font-extrabold tracking-tight">카카오톡 상담</p>
-                    <p className="text-[11px] text-gray-700 font-normal">인사 후 실시간 상담 바로 상담하기</p>
+                    <p className="text-lg font-extrabold tracking-tight">네이버 톡톡 상담</p>
+                    <p className="text-[11px] text-emerald-100 font-normal">실시간 톡톡으로 즉석 대기 상담하기</p>
                   </div>
-                </button>
+                </a>
               </motion.div>
             </div>
 
@@ -155,67 +232,65 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white max-w-md md:max-w-xl w-full aspect-[16/9] bg-gray-100"
+                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white max-w-md md:max-w-xl w-full aspect-[16/9] bg-gray-100 group"
                 id="hero-image-wrapper"
               >
-                <img
-                  src={menzpetBanner}
-                  alt="반려동물 전용 안전 이동 서비스 mans pet 펫택시"
-                  className="object-cover w-full h-full transform hover:scale-105 transition-transform duration-700"
-                  referrerPolicy="no-referrer"
-                />
-                
-                {/* Floating Bottom Quote Overlaid exactly as original mockup */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white text-center">
-                  <p className="text-xs font-semibold text-brand-yellow">우리 아이의 안전한 동행</p>
-                  <p className="text-sm font-bold">mans pet♥펫택시가 안전하고 편안하게 함께합니다. 💚</p>
+                <div className="absolute inset-0 w-full h-full">
+                  <AnimatePresence mode="wait">
+                    {slides[currentBannerIndex] ? (
+                      <motion.img
+                        key={currentBannerIndex}
+                        src={slides[currentBannerIndex].image}
+                        alt={slides[currentBannerIndex].alt}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="absolute inset-0 object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-405 text-xs">
+                        등록된 배너 이미지가 없습니다.
+                      </div>
+                    )}
+                  </AnimatePresence>
                 </div>
+                
+                {/* Small Elegant Floating Watermark Logo on the Banner Image */}
+                <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1 shadow-sm pointer-events-none scale-85 hover:opacity-100 transition-opacity z-10">
+                  <span className="text-[10px]">🐾</span>
+                  <span className="text-[9.5px] font-black tracking-tight text-gray-900">manspet <span className="text-brand-green">taxi</span></span>
+                </div>
+
+                {/* Trigger Button to Edit Banners directly */}
+                <button
+                  type="button"
+                  onClick={() => setIsEditingBanners(true)}
+                  className="absolute bottom-2.5 left-2.5 bg-black/60 hover:bg-black/80 text-white rounded-lg px-2.5 py-1.5 flex items-center gap-1.5 shadow-md border border-white/10 text-[11px] font-semibold active:scale-95 transition-all z-10 hover:border-brand-green/35 cursor-pointer"
+                  id="btn-edit-banner"
+                >
+                  <Camera className="w-3.5 h-3.5 fill-white/10" />
+                  <span>배너 직접 변경</span>
+                </button>
+
+                {/* Slideshow Progress Dot Indicators */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 px-2.5 py-1 bg-black/35 backdrop-blur-xs rounded-full z-10 border border-white/10">
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentBannerIndex(i)}
+                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                        i === currentBannerIndex 
+                          ? 'bg-brand-green w-3.5' 
+                          : 'bg-white/60 hover:bg-white'
+                      }`}
+                      aria-label={`${i + 1}번 배너로 이동`}
+                    />
+                  ))}
+                </div>
+
               </motion.div>
-
-              {/* Three Round Floating Side Badges matching the visual stickers in original image */}
-              <div className="absolute -bottom-6 -left-2 md:-left-6 lg:left-0 xl:-left-6 flex flex-col gap-3">
-                {/* Badge 1: Fogger Disinfection */}
-                <motion.div 
-                  initial={{ x: -30, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="bg-white/95 backdrop-blur-sm shadow-md border border-gray-100 rounded-full px-4 py-2.5 flex items-center gap-2.5 max-w-[180px] hover:scale-105 transition-transform"
-                >
-                  <span className="p-1 bg-green-50 text-brand-green rounded-full">💨</span>
-                  <div className="text-left">
-                    <p className="text-[11px] font-extrabold text-gray-900 leading-none">연무기 상시 방역</p>
-                    <p className="text-[9px] text-gray-500 mt-0.5 leading-none">청결하고 쾌적한 안심 차내</p>
-                  </div>
-                </motion.div>
-
-                {/* Badge 2: Seatbelt */}
-                <motion.div 
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="bg-white/95 backdrop-blur-sm shadow-md border border-gray-100 rounded-full px-4 py-2.5 flex items-center gap-2.5 max-w-[180px] hover:scale-105 transition-transform"
-                >
-                  <span className="p-1 bg-amber-50 text-amber-500 rounded-full">🦺</span>
-                  <div className="text-left">
-                    <p className="text-[11px] font-extrabold text-gray-900 leading-none">안전벨트 & 카시트</p>
-                    <p className="text-[9px] text-gray-500 mt-0.5 leading-none">안전하게 튼튼히 보호합니다</p>
-                  </div>
-                </motion.div>
-
-                {/* Badge 3: Special stress care */}
-                <motion.div 
-                  initial={{ x: -50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="bg-white/95 backdrop-blur-sm shadow-md border border-gray-100 rounded-full px-4 py-2.5 flex items-center gap-2.5 max-w-[180px] hover:scale-105 transition-transform"
-                >
-                  <span className="p-1 bg-red-50 text-red-500 rounded-full">🐶</span>
-                  <div className="text-left">
-                    <p className="text-[11px] font-extrabold text-gray-900 leading-none">반려동물 전용 이동</p>
-                    <p className="text-[9px] text-gray-500 mt-0.5 leading-none">스트레스 피로도 소음 최소화</p>
-                  </div>
-                </motion.div>
-              </div>
 
             </div>
           </div>
@@ -227,15 +302,15 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="relative">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-brand-green-light border-2 border-brand-green flex items-center justify-center p-1 overflow-hidden shadow-inner">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-brand-green-light border-2 border-brand-green flex items-center justify-center p-1 overflow-hidden shadow-inner">
                 <img
                   src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=200"
-                  alt="mans pet 로고 프로필"
+                  alt="manspet taxi 로고 프로필"
                   className="object-cover w-full h-full rounded-full"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <span className="absolute bottom-0 right-0 w-5.5 h-5.5 bg-brand-green border-2 border-white rounded-full flex items-center justify-center text-white text-[10px]">
+              <span className="absolute bottom-0 right-0 w-4.5 h-4.5 bg-brand-green border border-white rounded-full flex items-center justify-center text-white text-[8px]">
                 ✓
               </span>
             </div>
@@ -243,14 +318,14 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
             <div className="space-y-1">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 <h3 className="text-lg sm:text-xl font-extrabold text-gray-900" id="profile-title">
-                  mans pet <span className="text-red-500">♥</span> 펫택시
+                  manspet taxi
                 </h3>
                 <span className="text-[10px] bg-gray-100 text-gray-600 font-semibold px-2 py-0.5 rounded">
                   반려동물 전문이동 사업등록
                 </span>
               </div>
               <p className="text-sm font-medium text-gray-600 max-w-xl">
-                사랑하는 아이의 안전하고 편안한 이동, mans pet♥펫택시가 함께합니다. 병원 정기검진, 미용 등하원, 공항 이동, 전국 장거리 운송 안전케어.
+                사랑하는 아이의 안전하고 편안한 이동, manspet taxi가 함께합니다. 병원 정기검진, 미용 등하원, 공항 이동, 전국 장거리 운송 안전케어.
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-gray-400 pt-1">
                 <span>이웃 <strong className="text-gray-700 font-bold">{neighborCount.toLocaleString()}</strong></span>
@@ -274,14 +349,16 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
               <UserPlus className={`w-4 h-4 ${hasAddedNeighbor ? 'fill-gray-400' : 'fill-brand-green-light text-brand-green'}`} />
               {hasAddedNeighbor ? '이웃 맺기 취소' : '이웃 추가하기'}
             </button>
-            <button
-              onClick={() => setActiveTab('contact')}
-              className="flex items-center gap-1.5 bg-brand-green text-white hover:bg-brand-green-hover px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm"
+            <a
+              href="https://talk.naver.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 bg-[#03c75a] hover:bg-[#02b350] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm cursor-pointer"
               id="btn-send-message"
             >
-              <MessageSquare className="w-4 h-4 fill-white text-white" />
-              실시간 문의
-            </button>
+              <MessageCircle className="w-4 h-4 fill-white text-white" />
+              네이버 톡톡
+            </a>
             <button
               className="p-2.5 border border-gray-100 rounded-xl hover:bg-gray-50 text-gray-400 hover:text-gray-700"
               aria-label="더보기"
@@ -299,7 +376,7 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
             <div>
               <h4 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-brand-green" />
-                mans pet 공식 소통 채널 바로가기
+                manspet taxi 공식 소통 채널 바로가기
               </h4>
               <p className="text-xs text-gray-500 mt-1">블로그, 인스타, 카톡채널에서 실시간 소식과 후기를 보실 수 있습니다.</p>
             </div>
@@ -311,7 +388,7 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {/* 1. 네이버 블로그 (Naver Blog) */}
             <motion.a
-              href="https://blog.naver.com/speed011384"
+              href={siteConfig?.naverBlogUrl || 'https://blog.naver.com/speed011384'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}
@@ -331,31 +408,31 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
               </div>
             </motion.a>
 
-            {/* 2. 카카오톡 채널 (Kakao Channel) */}
+            {/* 2. 네이버 톡톡 (Naver TalkTalk) */}
             <motion.a
-              href="https://pf.kakao.com/_xgpxexnG"
+              href={siteConfig?.naverTalktalkUrl || 'https://talk.naver.com/'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative bg-[#FEE500]/5 hover:bg-[#FEE500]/10 border border-[#FEE500]/10 p-5 rounded-2xl flex flex-col justify-between transition-all cursor-pointer h-36"
-              id="sns-card-kakao-channel"
+              className="group relative bg-[#03c75a]/5 hover:bg-[#03c75a]/10 border border-[#03c75a]/10 p-5 rounded-2xl flex flex-col justify-between transition-all cursor-pointer h-36"
+              id="sns-card-naver-talktalk"
             >
               <div className="flex justify-between items-start">
-                <div className="w-10 h-10 rounded-xl bg-[#FEE500] flex items-center justify-center text-amber-950 shadow-sm">
-                  <MessageCircle className="w-5 h-5 fill-amber-950 text-amber-950" />
+                <div className="w-10 h-10 rounded-xl bg-[#03c75a] flex items-center justify-center text-white shadow-sm">
+                  <MessageCircle className="w-5 h-5 fill-white text-white" />
                 </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-amber-600" />
+                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-[#03c75a]" />
               </div>
               <div className="mt-4">
-                <p className="text-xs font-extrabold text-gray-900 leading-none">카카오톡 채널</p>
-                <p className="text-[10px] text-gray-500 mt-1 leading-tight line-clamp-2">"mans pet택시" 채널 추가로 손쉽게 요금을 체크하고 대기상담을 받으세요.</p>
+                <p className="text-xs font-extrabold text-gray-900 leading-none">네이버 톡톡 실시간 상담</p>
+                <p className="text-[10px] text-gray-500 mt-1 leading-tight line-clamp-2">"네이버 톡톡" 간편 접속으로 손쉽게 요금을 체크하고 인공지능 즉석 상담을 받으세요.</p>
               </div>
             </motion.a>
 
             {/* 3. 인스타그램 (Instagram) */}
             <motion.a
-              href="https://www.instagram.com/menzpet_taxi/"
+              href={siteConfig?.instagramUrl || 'https://www.instagram.com/menzpet_taxi/'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}
@@ -377,7 +454,7 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
 
             {/* 4. 네이버 TV */}
             <motion.a
-              href="https://tv.naver.com/"
+              href={siteConfig?.naverTvUrl || 'https://tv.naver.com/'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}
@@ -454,15 +531,15 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
         </button>
       </section>
 
-      {/* 4. mans pet❤펫택시 장점 (Advantages) */}
+      {/* 4. manspet taxi 장점 (Advantages) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 bg-brand-green-light/40 rounded-3xl border border-brand-green-light" id="advantages-section">
         <div className="p-6 md:p-8">
           <div className="max-w-3xl mb-8">
             <span className="text-[11px] bg-brand-green text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-              Mans Pet Advantage
+              manspet taxi Advantage
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mt-3">
-              mans pet 펫택시만의 5가지 차별화된 든든한 강점
+              manspet taxi만의 5가지 차별화된 든든한 강점
             </h2>
           </div>
 
@@ -677,7 +754,163 @@ export default function Home({ setActiveTab, reviews }: HomeProps) {
         </div>
       </section>
 
+      {/* Banner Editor Modal */}
+      <AnimatePresence>
+        {isEditingBanners && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+            id="banner-editor-modal"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-gray-150"
+            >
+              {/* Modal Header */}
+              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-brand-green/10 text-brand-green rounded-lg">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm">배너 슬라이드쇼 편집</h3>
+                    <p className="text-[11px] text-gray-500">배너 사진을 추가, 삭제하거나 변경해 보세요.</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingBanners(false)}
+                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  aria-label="창 닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
+              {/* Modal Body */}
+              <div className="p-6 space-y-5">
+                {/* Core Help Info */}
+                <div className="bg-brand-green-light/50 border border-brand-green/20 rounded-xl p-3 text-xs text-brand-green-dark flex items-start gap-2">
+                  <span className="text-sm mt-0.5">ℹ️</span>
+                  <p className="leading-relaxed font-semibold text-gray-700">
+                    새 반려동물 사진이나 원하시는 이미지를 직접 추가하여 슬라이드쇼를 업데이트하세요. 
+                    지정된 이미지는 즉시 배너 슬라이드쇼에 적용됩니다.
+                  </p>
+                </div>
+
+                {/* Slides List */}
+                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                  <p className="text-[11px] font-bold text-gray-400 tracking-wider uppercase">현재 구성된 배너 리스트 ({slides.length}개)</p>
+                  <div className="grid gap-2">
+                    {slides.map((slide, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-center justify-between p-2 rounded-xl border transition-all ${
+                          idx === currentBannerIndex 
+                            ? 'bg-brand-green-light/30 border-brand-green/35 ring-1 ring-brand-green' 
+                            : 'bg-gray-50 hover:bg-gray-100/75 border-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <img
+                            src={slide.image}
+                            alt={slide.alt}
+                            className="w-16 h-9 object-cover rounded-lg border border-gray-200 shrink-0"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                              {idx + 1}번 배너
+                              {idx === currentBannerIndex && (
+                                <span className="text-[9px] bg-brand-green text-white px-1.5 py-0.2 rounded-md font-semibold font-sans">
+                                  노출중
+                                </span>
+                              )}
+                            </span>
+                            <p className="text-[10px] text-gray-400 truncate max-w-[200px]">
+                              {slide.alt}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                          {/* Preview Slide Button */}
+                          <button
+                            type="button"
+                            onClick={() => setCurrentBannerIndex(idx)}
+                            className="text-[10.5px] font-bold text-gray-600 hover:text-brand-green bg-white hover:bg-white border border-gray-200 px-2 py-1 rounded-lg shadow-sm transition-all cursor-pointer"
+                            aria-label={`슬라이드 ${idx + 1} 미리보기`}
+                          >
+                            미리보기
+                          </button>
+                          
+                          {/* Delete Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSlide(idx)}
+                            disabled={slides.length <= 1}
+                            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                              slides.length <= 1 
+                                ? 'bg-gray-100 text-gray-300 border-gray-150 cursor-not-allowed' 
+                                : 'bg-white hover:bg-rose-50 text-gray-400 hover:text-rose-600 border-gray-200'
+                            }`}
+                            title="이 슬라이드 제거"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* File Uploader & Reset buttons */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  {/* File Upload Button */}
+                  <label className="flex flex-col items-center justify-center p-3.5 border-2 border-dashed border-gray-200 hover:border-brand-green bg-gray-50/50 hover:bg-brand-green-light/10 rounded-2xl cursor-pointer group transition-all text-center">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={handleBannerUpload}
+                    />
+                    <Upload className="w-5 h-5 text-gray-400 group-hover:text-brand-green transform group-hover:-translate-y-0.5 transition-all mb-1" />
+                    <span className="text-xs font-bold text-gray-700 group-hover:text-brand-green">새 사진 추가</span>
+                    <span className="text-[9.5px] text-gray-400 mt-0.5 font-medium">컴퓨터에서 직접 선택</span>
+                  </label>
+
+                  {/* Reset / Restore Preset Button */}
+                  <button
+                    type="button"
+                    onClick={handleResetBanners}
+                    className="flex flex-col items-center justify-center p-3.5 border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 rounded-2xl cursor-pointer group transition-all text-center active:scale-98"
+                  >
+                    <RotateCcw className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transform group-hover:rotate-45 transition-all mb-1" />
+                    <span className="text-xs font-bold text-gray-700">기본 배너로 복원</span>
+                    <span className="text-[9.5px] text-gray-400 mt-0.5">처음 설정 사진으로 복구</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsEditingBanners(false)}
+                  className="bg-brand-green hover:bg-brand-green-dark text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md cursor-pointer transition-all active:scale-95"
+                >
+                  설정 적용하기
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

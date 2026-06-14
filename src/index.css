@@ -2,13 +2,71 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-green: #0F623F;
-  --color-brand-green-light: #EBF5F0;
-  --color-brand-green-hover: #0a462c;
-  --color-brand-yellow: #FFC93C;
-  --color-brand-yellow-hover: #e6b32c;
-  --color-brand-dark: #1E293B;
-  --color-bg-light: #F8FAFC;
+  --color-brand-green: #87A987;
+  --color-brand-green-light: #F3F7F3;
+  --color-brand-green-hover: #739273;
+  --color-brand-yellow: #FDD299;
+  --color-brand-yellow-hover: #EBB87F;
+  --color-brand-dark: #4B535C;
+  --color-bg-light: #FAF8F5;
+  
+  --color-emerald-50: #F4F8F4;
+  --color-emerald-100: #E6EFE6;
+  --color-emerald-200: #CEE1CE;
+  --color-emerald-400: #9CBFA1;
+  --color-emerald-500: #87A987;
+  --color-emerald-600: #739273;
+  --color-emerald-700: #5F7B5F;
+  --color-emerald-800: #4C624C;
+  --color-emerald-900: #394A39;
+
+  --color-amber-50: #FFFDF5;
+  --color-amber-100: #FFFBE0;
+  --color-amber-200: #FFF4CC;
+  --color-amber-400: #FCE0AA;
+  --color-amber-500: #FDD299;
+  --color-amber-600: #EBB87F;
+
+  --color-yellow-50: #FFFDF5;
+  --color-yellow-105: #FFFEEB;
+  --color-yellow-100: #FFFBE0;
+  --color-yellow-500: #FDD299;
+  --color-yellow-600: #EBB87F;
+
+  --color-slate-50: #FAF9F6;
+  --color-slate-100: #F3F2EE;
+  --color-slate-200: #E7E5DF;
+  --color-slate-300: #D3CFC6;
+  --color-slate-400: #B7B2A5;
+  --color-slate-500: #948E7F;
+  --color-slate-600: #787366;
+  --color-slate-700: #5D594F;
+  --color-slate-800: #424039;
+  --color-slate-900: #292824;
+
+  --color-gray-50: #FAF9F6;
+  --color-gray-100: #F3F2EE;
+  --color-gray-200: #E7E5DF;
+  --color-gray-300: #D3CFC6;
+  --color-gray-400: #B7B2A5;
+  --color-gray-500: #948E7F;
+  --color-gray-600: #787366;
+  --color-gray-700: #5D594F;
+  --color-gray-800: #424039;
+  --color-gray-900: #292824;
+  --color-gray-950: #1B1B19;
+
+  --color-neutral-50: #FAF9F6;
+  --color-neutral-100: #F3F2EE;
+  --color-neutral-200: #E7E5DF;
+  --color-neutral-300: #D3CFC6;
+  --color-neutral-400: #B7B2A5;
+  --color-neutral-500: #948E7F;
+  --color-neutral-600: #787366;
+  --color-neutral-700: #5D594F;
+  --color-neutral-800: #424039;
+  --color-neutral-900: #292824;
+  --color-neutral-950: #1B1B19;
   
   --font-sans: "Noto Sans KR", "Inter", sans-serif;
   --font-display: "Space Grotesk", sans-serif;

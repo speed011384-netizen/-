@@ -34,3 +34,30 @@ export interface GalleryPhoto {
   description: string;
   imageUrl: string;
 }
+
+export interface SiteConfig {
+  companyName: string;
+  ceoName: string;
+  address: string;
+  businessNumber: string;
+  mailOrderNumber: string;
+  animalLicenseNumber: string;
+  phone: string;
+  privacyOfficer: string;
+  naverBlogUrl?: string;
+  naverTalktalkUrl?: string;
+  instagramUrl?: string;
+  naverTvUrl?: string;
+}
+
+export interface FareConfig {
+  baseFare: number;
+  perKmFare: number;
+  minFare: number;
+  minFareDistanceLimit: number; // 7km
+  petCareSurcharge: number;     // 5,000
+  viaSurcharge: number;         // 5,000
+  nightSurcharge: number;       // 5,000
+  outOfSeoulSurcharge: number;  // 5,000
+  waitingFarePer10Min: number;  // 1,000
+}

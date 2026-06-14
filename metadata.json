@@ -1,5 +1,5 @@
 {
-  "name": "mans pet 펫택시",
+  "name": "manspet taxi",
   "description": "사랑하는 반려동물의 안전하고 편안한 이동을 돕는 프리미엄 펫택시 서비스 사이트",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

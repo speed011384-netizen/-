@@ -6,15 +6,24 @@ import Guide from './components/Guide';
 import FareCalculator from './components/FareCalculator';
 import Reviews from './components/Reviews';
 import Photos from './components/Photos';
-import Inquiry from './components/Inquiry';
-import { Review, Booking } from './types';
-import { INITIAL_REVIEWS } from './data';
-import { PawPrint, Heart, Smartphone, MapPin, Clock, Info } from 'lucide-react';
+import AdminCMS from './components/AdminCMS';
+import { Review, Booking, GalleryPhoto, SiteConfig, FareConfig } from './types';
+import { 
+  INITIAL_REVIEWS, GALLERY_PHOTOS, 
+  DEFAULT_SITE_CONFIG, DEFAULT_FARE_CONFIG 
+} from './data';
+import { PawPrint, Heart, Smartphone } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [reviews, setReviews] = useState<Review[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+  
+  // Custom CMS configurations state
+  const [siteConfig, setSiteConfig] = useState<SiteConfig>(DEFAULT_SITE_CONFIG);
+  const [fareConfig, setFareConfig] = useState<FareConfig>(DEFAULT_FARE_CONFIG);
+
   const [calculatorData, setCalculatorData] = useState<{
     petType: 'dog' | 'cat' | 'special';
     serviceType: string;
@@ -23,7 +32,7 @@ export default function App() {
     fare: number;
   } | null>(null);
 
-  // Load reviews from localStorage on initialization, fallback to default
+  // Load configs from localStorage on initialization, fallback to default
   useEffect(() => {
     const savedReviews = localStorage.getItem('menzpet_reviews');
     if (savedReviews) {
@@ -44,6 +53,39 @@ export default function App() {
         setBookings([]);
       }
     }
+
+    const savedPhotos = localStorage.getItem('manspet_gallery_photos');
+    if (savedPhotos) {
+      try {
+        setPhotos(JSON.parse(savedPhotos));
+      } catch (err) {
+        setPhotos(GALLERY_PHOTOS);
+      }
+    } else {
+      setPhotos(GALLERY_PHOTOS);
+    }
+
+    const savedSite = localStorage.getItem('manspet_site_config');
+    if (savedSite) {
+      try {
+        setSiteConfig(JSON.parse(savedSite));
+      } catch (err) {
+        setSiteConfig(DEFAULT_SITE_CONFIG);
+      }
+    } else {
+      setSiteConfig(DEFAULT_SITE_CONFIG);
+    }
+
+    const savedFare = localStorage.getItem('manspet_fare_config');
+    if (savedFare) {
+      try {
+        setFareConfig(JSON.parse(savedFare));
+      } catch (err) {
+        setFareConfig(DEFAULT_FARE_CONFIG);
+      }
+    } else {
+      setFareConfig(DEFAULT_FARE_CONFIG);
+    }
   }, []);
 
   // Sync state helpers
@@ -58,19 +100,6 @@ export default function App() {
     localStorage.setItem('menzpet_reviews', JSON.stringify(updated));
   };
 
-  const handleAddBooking = (newBookingData: Omit<Booking, 'id' | 'status' | 'createdAt'>) => {
-    const freshBooking: Booking = {
-      ...newBookingData,
-      id: `bk-${Date.now()}`,
-      status: 'pending',
-      createdAt: new Date().toLocaleString('ko-KR', { hour12: false })
-    };
-    const updated = [freshBooking, ...bookings];
-    setBookings(updated);
-    localStorage.setItem('menzpet_bookings', JSON.stringify(updated));
-  };
-
-  // Callback from fare calculator card logic
   const handleApplyBookingFromCalculator = (data: {
     petType: 'dog' | 'cat' | 'special';
     serviceType: string;
@@ -79,33 +108,90 @@ export default function App() {
     fare: number;
   }) => {
     setCalculatorData(data);
-    setActiveTab('contact'); // redirect to Inquiry screen
+    try {
+      const optionsStr = data.options.length > 0 ? `\n추가옵션: ${data.options.join(', ')}` : '';
+      const textToCopy = `[manspet taxi 견적 문의]\n${data.serviceType}\n이동거리: ${data.distance}km\n예상요금: ${data.fare.toLocaleString()}원${optionsStr}`;
+      navigator.clipboard.writeText(textToCopy);
+    } catch (err) {
+      console.log('Clipboard copy failed', err);
+    }
+    
+    // Directly launch Naver TalkTalk externally
+    const link = document.createElement('a');
+    link.href = 'https://talk.naver.com/';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
+  };
+
+  // Reset function passed to CMS
+  const handleResetToDefault = () => {
+    localStorage.removeItem('manspet_site_config');
+    localStorage.removeItem('manspet_fare_config');
+    localStorage.removeItem('menzpet_reviews');
+    localStorage.removeItem('manspet_gallery_photos');
+    setSiteConfig(DEFAULT_SITE_CONFIG);
+    setFareConfig(DEFAULT_FARE_CONFIG);
+    setReviews(INITIAL_REVIEWS);
+    setPhotos(GALLERY_PHOTOS);
   };
 
   const renderActiveScreen = () => {
     switch (activeTab) {
       case 'home':
-        return <Home setActiveTab={setActiveTab} reviews={reviews} />;
+        return <Home setActiveTab={setActiveTab} reviews={reviews} photos={photos} siteConfig={siteConfig} />;
       case 'services':
         return <Services setActiveTab={setActiveTab} />;
       case 'guide':
         return <Guide />;
       case 'fare':
-        return <FareCalculator onApplyForBooking={handleApplyBookingFromCalculator} />;
+        return (
+          <FareCalculator 
+            fareConfig={fareConfig}
+            onApplyForBooking={handleApplyBookingFromCalculator} 
+          />
+        );
       case 'reviews':
         return <Reviews reviews={reviews} onAddReview={handleAddReview} />;
       case 'photos':
-        return <Photos setActiveTab={setActiveTab} />;
-      case 'contact':
         return (
-          <Inquiry
-            bookings={bookings}
-            onAddBooking={handleAddBooking}
-            calculatorData={calculatorData}
+          <Photos 
+            setActiveTab={setActiveTab} 
+            photos={photos}
+            onUpdatePhotos={(updated: GalleryPhoto[]) => {
+              setPhotos(updated);
+              localStorage.setItem('manspet_gallery_photos', JSON.stringify(updated));
+            }}
+          />
+        );
+      case 'admin':
+        return (
+          <AdminCMS
+            siteConfig={siteConfig}
+            onUpdateSiteConfig={(updated) => {
+              setSiteConfig(updated);
+              localStorage.setItem('manspet_site_config', JSON.stringify(updated));
+            }}
+            fareConfig={fareConfig}
+            onUpdateFareConfig={(updated) => {
+              setFareConfig(updated);
+              localStorage.setItem('manspet_fare_config', JSON.stringify(updated));
+            }}
+            reviews={reviews}
+            onUpdateReviews={(updated) => {
+              setReviews(updated);
+              localStorage.setItem('menzpet_reviews', JSON.stringify(updated));
+            }}
+            photos={photos}
+            onUpdatePhotos={(updated) => {
+              setPhotos(updated);
+              localStorage.setItem('manspet_gallery_photos', JSON.stringify(updated));
+            }}
+            onResetToDefault={handleResetToDefault}
           />
         );
       default:
-        return <Home setActiveTab={setActiveTab} reviews={reviews} />;
+        return <Home setActiveTab={setActiveTab} reviews={reviews} photos={photos} siteConfig={siteConfig} />;
     }
   };
 
@@ -113,7 +199,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50/50 flex flex-col justify-between" id="app-root-container">
       <div>
         {/* Navigation Header */}
-        <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Header activeTab={activeTab} setActiveTab={setActiveTab} siteConfig={siteConfig} />
 
         {/* Core Main stage area */}
         <main className="pt-2 animate-fadeIn" id="app-main-viewports">
@@ -132,19 +218,19 @@ export default function App() {
                 <PawPrint className="w-5 h-5 fill-white" />
               </div>
               <div>
-                <p className="font-extrabold text-white text-base tracking-tight">mans pet♥펫택시</p>
-                <p className="text-[9px] text-neutral-500 font-display font-medium uppercase tracking-widest leading-none">Mans Pet Taxi</p>
+                <p className="font-extrabold text-white text-base tracking-tight">manspet taxi</p>
+                <p className="text-[9px] text-neutral-500 font-display font-medium uppercase tracking-widest leading-none">manspet taxi</p>
               </div>
             </div>
 
             {/* Bottom floating phone widgets */}
             <div className="flex flex-wrap items-center gap-4 text-xs font-semibold">
-              <a href="tel:010-7644-0799" className="flex items-center gap-1.5 text-white hover:text-brand-yellow font-bold">
+              <a href={`tel:${siteConfig.phone}`} className="flex items-center gap-1.5 text-white hover:text-brand-yellow font-bold">
                 <Smartphone className="w-4 h-4" />
-                대표전화: 010-7644-0799
+                대표전화: {siteConfig.phone}
               </a>
               <span>|</span>
-              <p className="text-neutral-400">카카오톡 검색창에 <strong className="text-brand-yellow">"mans pet택시"</strong>를 검색하세요</p>
+              <p className="text-neutral-400">네이버 검색창에 <strong className="text-emerald-400">"manspet taxi"</strong>를 검색해 톡톡으로 문의하세요</p>
             </div>
           </div>
 
@@ -153,12 +239,11 @@ export default function App() {
             <div className="lg:col-span-8 space-y-3">
               <p className="text-neutral-300 font-bold text-sm block">회사 및 사업 정보 고시</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-neutral-500">
-                <p>상호명: mans pet (MANS PET CO.) | 대표자: 김태민</p>
-                <p>주소: 경기도 평택시 비전동 안심로 펫타워 (평택 본부)</p>
-                <p>사업자등록번호: 312-87-01292 | 통신판매등록서 2026-평택비전-0811호</p>
-                <p>동물위생운송업 허가등록번호: 제 3910000-014-0002 호</p>
-                <p>고객 안심 24시 직통 상담센터: <a href="tel:010-7644-0799" className="hover:underline text-neutral-400 font-bold">010-7644-0799</a></p>
-                <p>개인정보 보호책임자: 김태민</p>
+                <p>상호명: {siteConfig.companyName} | 대표자: {siteConfig.ceoName}</p>
+                <p>주소: {siteConfig.address}</p>
+                <p>사업자등록번호: {siteConfig.businessNumber}</p>
+                <p>고객 안심 24시 직통 상담센터: <a href={`tel:${siteConfig.phone}`} className="hover:underline text-neutral-400 font-bold">{siteConfig.phone}</a></p>
+                <p>개인정보 보호책임자: {siteConfig.privacyOfficer}</p>
               </div>
             </div>
 
@@ -169,18 +254,18 @@ export default function App() {
                 <span>안전 수송 서약 고시</span>
               </div>
               <p className="text-neutral-500 leading-relaxed text-[11px]">
-                "우리 아이들의 소중한 봄날 같은 걸음, mans pet이 밤낮없이 수호하겠습니다. 
+                "우리 아이들의 소중한 봄날 같은 걸음, manspet taxi가 밤낮없이 수호하겠습니다. 
                 매 회 탑승 전 연무 피톤치드 집중 방역 및 전 차량 대형 카시트 탑승과 동승 가이드 규정을 철저히 이행함을 정직히 고시합니다."
               </p>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-neutral-800 text-[10px] text-neutral-600">
-            <p>© 2026 MANS PET TAXI. All Rights Reserved. Designed with premium components.</p>
+            <p>© 2026 MANSPET TAXI. All Rights Reserved. Designed with premium components.</p>
             <div className="flex gap-4">
               <button onClick={() => setActiveTab('guide')} className="hover:underline">이용약관</button>
               <span>|</span>
-              <button onClick={() => setActiveTab('contact')} className="hover:underline">개인정보처리방침</button>
+              <a href="https://talk.naver.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">네이버 톡톡 실시간 문의</a>
               <span>|</span>
               <button onClick={() => setActiveTab('fare')} className="hover:underline">요금정책 고시</button>
             </div>
