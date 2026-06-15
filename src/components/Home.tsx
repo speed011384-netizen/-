@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   PawPrint, Phone, MessageCircle, ShieldCheck, Heart, 
-  Sparkles, Clock, MapPin, Star, ArrowRight, UserPlus, 
+  Sparkles, Clock, MapPin, Star, ArrowRight, 
   MessageSquare, MoreHorizontal, ShieldAlert, BadgeInfo,
   Instagram, ExternalLink, Tv, Camera, Upload, Plus,
   Trash2, RotateCcw, X
@@ -36,10 +36,7 @@ interface HomeProps {
 }
 
 export default function Home({ setActiveTab, reviews, photos = [], siteConfig }: HomeProps) {
-  const [neighborCount, setNeighborCount] = useState(1234);
-  const [hasAddedNeighbor, setHasAddedNeighbor] = useState(false);
   const [activePhotoCategory, setActivePhotoCategory] = useState<'all' | 'dog' | 'cat' | 'special'>('all');
-  const [visitorCount, setVisitorCount] = useState(45678);
   const [slides, setSlides] = useState(bannerSlides);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isEditingBanners, setIsEditingBanners] = useState(false);
@@ -85,22 +82,6 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
   const handleResetBanners = () => {
     setSlides(bannerSlides);
     setCurrentBannerIndex(0);
-  };
-
-  // Increment visitors slightly on load to resemble active blog
-  useEffect(() => {
-    const randomIncr = Math.floor(Math.random() * 5) + 1;
-    setVisitorCount(prev => prev + randomIncr);
-  }, []);
-
-  const handleNeighborClick = () => {
-    if (!hasAddedNeighbor) {
-      setNeighborCount(prev => prev + 1);
-      setHasAddedNeighbor(true);
-    } else {
-      setNeighborCount(prev => prev - 1);
-      setHasAddedNeighbor(false);
-    }
   };
 
   const displayPhotos = photos.length > 0 ? photos : GALLERY_PHOTOS;
@@ -293,78 +274,6 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
               </motion.div>
 
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. PROFILE SECTION (Naver Blog Styled Box precisely representing the mock profile) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="profile-card-section">
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-            <div className="relative">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-brand-green-light border-2 border-brand-green flex items-center justify-center p-1 overflow-hidden shadow-inner">
-                <img
-                  src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=200"
-                  alt="manspet taxi 로고 프로필"
-                  className="object-cover w-full h-full rounded-full"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <span className="absolute bottom-0 right-0 w-4.5 h-4.5 bg-brand-green border border-white rounded-full flex items-center justify-center text-white text-[8px]">
-                ✓
-              </span>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h3 className="text-lg sm:text-xl font-extrabold text-gray-900" id="profile-title">
-                  manspet taxi
-                </h3>
-                <span className="text-[10px] bg-gray-100 text-gray-600 font-semibold px-2 py-0.5 rounded">
-                  반려동물 전문이동 사업등록
-                </span>
-              </div>
-              <p className="text-sm font-medium text-gray-600 max-w-xl">
-                사랑하는 아이의 안전하고 편안한 이동, manspet taxi가 함께합니다. 병원 정기검진, 미용 등하원, 공항 이동, 전국 장거리 운송 안전케어.
-              </p>
-              <div className="flex items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-gray-400 pt-1">
-                <span>이웃 <strong className="text-gray-700 font-bold">{neighborCount.toLocaleString()}</strong></span>
-                <span>•</span>
-                <span>방문 <strong className="text-gray-700 font-bold">{visitorCount.toLocaleString()}</strong></span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Profile Buttons */}
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-center">
-            <button
-              onClick={handleNeighborClick}
-              className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border ${
-                hasAddedNeighbor 
-                  ? 'bg-gray-100 border-gray-200 text-gray-500' 
-                  : 'bg-white border-gray-200 text-brand-green hover:bg-brand-green-light hover:border-brand-green'
-              }`}
-              id="btn-add-neighbor"
-            >
-              <UserPlus className={`w-4 h-4 ${hasAddedNeighbor ? 'fill-gray-400' : 'fill-brand-green-light text-brand-green'}`} />
-              {hasAddedNeighbor ? '이웃 맺기 취소' : '이웃 추가하기'}
-            </button>
-            <a
-              href="https://talk.naver.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-[#03c75a] hover:bg-[#02b350] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm cursor-pointer"
-              id="btn-send-message"
-            >
-              <MessageCircle className="w-4 h-4 fill-white text-white" />
-              네이버 톡톡
-            </a>
-            <button
-              className="p-2.5 border border-gray-100 rounded-xl hover:bg-gray-50 text-gray-400 hover:text-gray-700"
-              aria-label="더보기"
-            >
-              <MoreHorizontal className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </section>
