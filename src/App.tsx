@@ -110,7 +110,7 @@ export default function App() {
     setCalculatorData(data);
     try {
       const optionsStr = data.options.length > 0 ? `\n추가옵션: ${data.options.join(', ')}` : '';
-      const textToCopy = `[manspet taxi 견적 문의]\n${data.serviceType}\n이동거리: ${data.distance}km\n예상요금: ${data.fare.toLocaleString()}원${optionsStr}`;
+      const textToCopy = `[MANS.PET PETTAXI 견적 문의]\n${data.serviceType}\n이동거리: ${data.distance}km\n예상요금: ${data.fare.toLocaleString()}원${optionsStr}`;
       navigator.clipboard.writeText(textToCopy);
     } catch (err) {
       console.log('Clipboard copy failed', err);
@@ -218,8 +218,8 @@ export default function App() {
                 <PawPrint className="w-5 h-5 fill-white" />
               </div>
               <div>
-                <p className="font-extrabold text-white text-base tracking-tight">manspet taxi</p>
-                <p className="text-[9px] text-neutral-500 font-display font-medium uppercase tracking-widest leading-none">manspet taxi</p>
+                <p className="font-extrabold text-white text-base tracking-tight">MANS.PET PETTAXI</p>
+                <p className="text-[9px] text-neutral-500 font-display font-semibold uppercase tracking-widest leading-none">MANS.PET PETTAXI</p>
               </div>
             </div>
 
@@ -230,7 +230,7 @@ export default function App() {
                 대표전화: {siteConfig.phone}
               </a>
               <span>|</span>
-              <p className="text-neutral-400">네이버 검색창에 <strong className="text-emerald-400">"manspet taxi"</strong>를 검색해 톡톡으로 문의하세요</p>
+              <p className="text-neutral-400">네이버 검색창에 <strong className="text-emerald-400">"MANS.PET PETTAXI"</strong>를 검색해 톡톡으로 문의하세요</p>
             </div>
           </div>
 
@@ -254,14 +254,14 @@ export default function App() {
                 <span>안전 수송 서약 고시</span>
               </div>
               <p className="text-neutral-500 leading-relaxed text-[11px]">
-                "우리 아이들의 소중한 봄날 같은 걸음, manspet taxi가 밤낮없이 수호하겠습니다. 
+                "우리 아이들의 소중한 봄날 같은 걸음, MANS.PET PETTAXI가 밤낮없이 수호하겠습니다. 
                 매 회 탑승 전 연무 피톤치드 집중 방역 및 전 차량 대형 카시트 탑승과 동승 가이드 규정을 철저히 이행함을 정직히 고시합니다."
               </p>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-neutral-800 text-[10px] text-neutral-600">
-            <p>© 2026 MANSPET TAXI. All Rights Reserved. Designed with premium components.</p>
+            <p>© 2026 MANS.PET PETTAXI. All Rights Reserved. Designed with premium components.</p>
             <div className="flex gap-4">
               <button onClick={() => setActiveTab('guide')} className="hover:underline">이용약관</button>
               <span>|</span>

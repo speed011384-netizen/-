@@ -25,6 +25,58 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
   const [formDescription, setFormDescription] = useState('');
   const [formImageUrl, setFormImageUrl] = useState('');
 
+  // File, Drag & Drop and Clipboard Paste logic
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormImageUrl(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePasteEvent = (e: React.ClipboardEvent<HTMLDivElement | HTMLInputElement | HTMLTextAreaElement>) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            if (event.target?.result) {
+              setFormImageUrl(event.target.result as string);
+            }
+          };
+          reader.readAsDataURL(file);
+          break;
+        }
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormImageUrl(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const filteredPhotos = activeCategory === 'all'
     ? photos
     : photos.filter(photo => photo.category === activeCategory);
@@ -129,7 +181,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
           Real Drive Gallery
         </span>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-          manspet taxi 안전 승무 사진관
+          MANS.PET PETTAXI 안전 승무 사진관
         </h2>
         <p className="text-sm sm:text-base text-gray-600">
           실시간 살균 방역 차량 내 전용 카시트와 튼튼한 벨트 체결 하에 기쁘게 탑승 중인 아이들 사진입니다.
@@ -441,19 +493,48 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
                 </div>
 
                 {/* Image URL Input */}
-                <div className="space-y-2">
-                  <label className="text-xs font-black text-gray-700 block">이미지 주소 (URL)</label>
-                  <input
-                    type="url"
-                    required
-                    value={formImageUrl}
-                    onChange={(e) => setFormImageUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full text-[11px] font-mono bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-green focus:bg-white transition-colors"
-                  />
+                <div className="space-y-4">
+                  {/* Paste / Upload Box */}
+                  <div className="space-y-1.5" onPaste={handlePasteEvent}>
+                    <label className="text-xs font-black text-gray-700 block">📸 내 사진 붙여넣기 (Clipboard Paste) / 컴퓨터 파일 선택</label>
+                    <div 
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      className="border-2 border-dashed border-gray-200 hover:border-brand-green/70 bg-gray-50 rounded-2xl p-4 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center gap-1.5"
+                    >
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleFileChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      />
+                      <div className="p-2 bg-brand-green/10 text-brand-green rounded-full group-hover:scale-105 transition-transform duration-350">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs font-extrabold text-gray-800">여기에 복사한 사진 붙여넣기 (Ctrl + V)</span>
+                      <span className="text-[10px] text-gray-500 font-semibold">마우스 클릭으로 파일 직접 선택 또는 드래그 앤 드롭</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center">
+                      <label className="text-xs font-black text-gray-700 block">이미지 주소 (URL/Base64)</label>
+                      <span className="text-[9px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded leading-none">자동 동기화 중</span>
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={formImageUrl}
+                      onChange={(e) => setFormImageUrl(e.target.value)}
+                      placeholder="사진을 붙여넣거나 파일을 선택하면 자동으로 채워집니다. 직접 입력도 가능합니다."
+                      className="w-full text-[10px] font-mono bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-green focus:bg-white transition-colors"
+                    />
+                  </div>
 
                   {/* Examples recommendation panel */}
-                  <div className="space-y-1 bg-slate-50 p-3 rounded-xl border border-gray-150">
+                  <div className="space-y-1 bg-slate-50 p-2.5 rounded-xl border border-gray-150">
                     <p className="text-[10px] font-bold text-gray-500">💡 갤러리 추천 예시 사진 원클릭 선택:</p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {[

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Settings, DollarSign, MessageSquare, Image as ImageIcon, 
@@ -138,6 +138,58 @@ export default function AdminCMS({
     }
   };
 
+  // CMS Photo Upload/Paste Help logic
+  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePhotoPasteEvent = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            if (event.target?.result) {
+              setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
+            }
+          };
+          reader.readAsDataURL(file);
+          break;
+        }
+      }
+    }
+  };
+
+  const handlePhotoDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handlePhotoDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Photo Handlers
   const handleAddOrEditPhoto = () => {
     if (!photoForm.title || !photoForm.description || !photoForm.imageUrl) {
@@ -211,7 +263,7 @@ export default function AdminCMS({
         <div>
           <span className="inline-flex items-center gap-1.5 bg-brand-green/20 text-brand-green text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest">
             <Shield className="w-3 h-3 text-brand-green animate-pulse" />
-            manspet taxi CMS
+            MANS.PET PETTAXI CMS
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-3">
             실시간 원격 콘텐츠 및 요금 관리 시스템
@@ -620,10 +672,10 @@ export default function AdminCMS({
                     <label className="text-xs font-bold text-gray-700 block">이용 총평 및 행복한 후기내용</label>
                     <textarea 
                       rows={3}
-                      placeholder="실탑승 후 느낌점과 기사님의 친절도, 소독 위생 전경 등을 자유롭게 작성하세요..."
+                      placeholder="실탑승 후 느낌점과 기사님의 친절도, 소독 위생 전경 등을 자유롭게 작성해 주세요."
                       value={reviewForm.content}
                       onChange={(e) => setReviewForm({ ...reviewForm, content: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-medium focus:bg-white focus:border-brand-green focus:outline-none transition-all resize-none"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:bg-white focus:border-brand-green focus:outline-none transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -631,6 +683,7 @@ export default function AdminCMS({
                 <div className="flex justify-end gap-2 pt-2">
                   {editingReviewId && (
                     <button
+                      type="button"
                       onClick={() => {
                         setEditingReviewId(null);
                         setReviewForm({ author: '', petName: '', petType: 'dog', rating: 5, content: '' });
@@ -641,27 +694,23 @@ export default function AdminCMS({
                     </button>
                   )}
                   <button
+                    type="button"
                     onClick={handleAddOrEditReview}
                     className="flex items-center gap-1 bg-brand-green hover:bg-brand-green-hover text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all"
                   >
                     <Save className="w-3.5 h-3.5 fill-white" />
-                    {editingReviewId ? '후기 수정 동기화' : '새 승객 후기 등록 발행'}
+                    {editingReviewId ? '리뷰 편집 완료' : '실후기 전광판 발행 등재'}
                   </button>
                 </div>
               </div>
 
-              {/* List database dashboard */}
+              {/* Reviews list table */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
-                <div className="border-b border-gray-50 pb-3 flex justify-between items-center">
-                  <div>
-                    <h3 className="text-base font-black text-gray-900">승객 후기 보드 리스트 ({reviews.length}개 국책등록)</h3>
-                    <p className="text-[11px] text-gray-500 mt-0.5">실재로 웹사이트 프론트에 표시되고 있는 영수증 인증 후기 명단입니다.</p>
-                  </div>
-                </div>
-
+                <h3 className="text-base font-black text-gray-900">현 탑승객 실후기 목록 ({reviews.length}건 등록됨)</h3>
+                
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs text-gray-600">
-                    <thead className="text-[10px] text-gray-400 font-extrabold uppercase bg-gray-50/50 border-b border-gray-155">
+                    <thead className="text-[10px] text-gray-400 font-extrabold uppercase bg-gray-50/50 border-b border-gray-150">
                       <tr>
                         <th className="px-3 py-3 rounded-l-lg">보호자</th>
                         <th className="px-3 py-3">아이 인적사항</th>
@@ -684,6 +733,7 @@ export default function AdminCMS({
                           <td className="px-3 py-3.5 text-gray-500 truncate max-w-xs">{rev.content}</td>
                           <td className="px-3 py-3.5 text-right space-x-1 whitespace-nowrap">
                             <button
+                              type="button"
                               onClick={() => handleStartEditReview(rev)}
                               className="p-1 px-2.5 bg-sky-50 text-sky-700 hover:bg-sky-100/70 text-[10px] font-bold rounded-md transition-colors inline-flex items-center gap-0.5"
                             >
@@ -691,6 +741,7 @@ export default function AdminCMS({
                               수정
                             </button>
                             <button
+                              type="button"
                               onClick={() => handleDeleteReview(rev.id)}
                               className="p-1 px-2.5 bg-red-50 text-red-600 hover:bg-red-100/70 text-[10px] font-bold rounded-md transition-colors inline-flex items-center gap-0.5"
                             >
@@ -741,16 +792,59 @@ export default function AdminCMS({
                       <option value="special">특수동물 (Special)</option>
                     </select>
                   </div>
+
+                  {/* Drag, Drop and Paste Box */}
+                  <div className="space-y-1.5 sm:col-span-3" onPaste={handlePhotoPasteEvent}>
+                    <label className="text-xs font-bold text-gray-750 block">📸 내 운행 사진 파일 선택 또는 복사 이미지 붙여넣기 (Ctrl + V)</label>
+                    <div 
+                      onDragOver={handlePhotoDragOver}
+                      onDrop={handlePhotoDrop}
+                      className="border-2 border-dashed border-gray-200 hover:border-brand-green bg-slate-50/50 rounded-2xl p-4 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center gap-1.5"
+                    >
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handlePhotoFileChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      />
+                      <div className="p-1.5 bg-brand-green/10 text-brand-green rounded-full group-hover:scale-105 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                      </div>
+                      <span className="text-xs font-bold text-gray-850">여기에 운행 사진 붙여넣기 (Ctrl + V)</span>
+                      <span className="text-[10px] text-gray-500 font-semibold">마우스 클릭으로 내 기기 사진 선택 또는 이미지 드래그</span>
+                    </div>
+                  </div>
+
                   <div className="space-y-1.5 sm:col-span-3">
-                    <label className="text-xs font-bold text-gray-700 block">이미지 무료 라이선스 URL 주소 (Unsplash 등 지원)</label>
+                    <label className="text-xs font-bold text-gray-700 block">이미지 주소 (URL 및 복사한 이미지 데이터)</label>
                     <input 
                       type="text" 
-                      placeholder="e.g. https://images.unsplash.com/photo-..."
+                      placeholder="e.g. https://images.unsplash.com/photo-... (위 상자에서 이미지 붙여넣기 시 자동 기입됩니다)"
                       value={photoForm.imageUrl}
                       onChange={(e) => setPhotoForm({ ...photoForm, imageUrl: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[10px] font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
+
+                  {photoForm.imageUrl && (
+                    <div className="space-y-1 sm:col-span-3">
+                      <span className="text-[10px] font-bold text-gray-500">사진 미리보기 (미리뷰):</span>
+                      <div className="rounded-xl border border-gray-150 overflow-hidden bg-gray-55 h-28 flex items-center justify-center max-w-sm">
+                        <img
+                          src={photoForm.imageUrl}
+                          alt="CMS Photo Preview"
+                          className="object-cover w-full h-full"
+                          onError={(e) => {
+                            (e.target as any).src = "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&q=80&w=500";
+                          }}
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-1.5 sm:col-span-3">
                     <label className="text-xs font-bold text-gray-700 block">사진 하단 세부 한글 설명</label>
                     <input 

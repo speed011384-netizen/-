@@ -16,15 +16,15 @@ import menzpetBannerSmallDog from '../assets/images/menzpet_banner_small_dog_178
 const bannerSlides = [
   {
     image: menzpetBanner,
-    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 골든 리트리버"
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 골든 리트리버"
   },
   {
     image: menzpetBannerWithCat,
-    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 강아지와 고양이 동행"
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 강아지와 고양이 동행"
   },
   {
     image: menzpetBannerSmallDog,
-    alt: "반려동물 전용 안전 이동 서비스 manspet taxi - 귀여운 반려견"
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 귀여운 반려견"
   }
 ];
 
@@ -241,7 +241,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                 {/* Small Elegant Floating Watermark Logo on the Banner Image */}
                 <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1 shadow-sm pointer-events-none scale-85 hover:opacity-100 transition-opacity z-10">
                   <span className="text-[10px]">🐾</span>
-                  <span className="text-[9.5px] font-black tracking-tight text-gray-900">manspet <span className="text-brand-green">taxi</span></span>
+                  <span className="text-[9.5px] font-black tracking-tight text-gray-900">MANS.PET <span className="text-brand-green">PETTAXI</span></span>
                 </div>
 
                 {/* Trigger Button to Edit Banners directly */}
@@ -285,7 +285,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
             <div>
               <h4 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-brand-green" />
-                manspet taxi 공식 소통 채널 바로가기
+                MANS.PET PETTAXI 공식 소통 채널 바로가기
               </h4>
               <p className="text-xs text-gray-500 mt-1">블로그, 인스타, 카톡채널에서 실시간 소식과 후기를 보실 수 있습니다.</p>
             </div>
@@ -440,15 +440,15 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
         </button>
       </section>
 
-      {/* 4. manspet taxi 장점 (Advantages) */}
+      {/* 4. MANS.PET PETTAXI 장점 (Advantages) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 bg-brand-green-light/40 rounded-3xl border border-brand-green-light" id="advantages-section">
         <div className="p-6 md:p-8">
           <div className="max-w-3xl mb-8">
             <span className="text-[11px] bg-brand-green text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-              manspet taxi Advantage
+              MANS.PET PETTAXI Advantage
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mt-3">
-              manspet taxi만의 5가지 차별화된 든든한 강점
+              MANS.PET PETTAXI만의 5가지 차별화된 든든한 강점
             </h2>
           </div>
 

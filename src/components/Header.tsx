@@ -27,7 +27,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
       <div className="hidden md:flex justify-between items-center max-w-7xl mx-auto px-6 py-2 text-xs text-gray-500 border-b border-gray-50">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
-          <span>manspet taxi 안전 드라이버 대기중 (24시간 상담)</span>
+          <span>MANS.PET PETTAXI 안전 드라이버 대기중 (24시간 상담)</span>
         </div>
         <div className="flex items-center gap-4">
           <span>평일/주말 상시 전용 매칭 보장</span>
@@ -48,12 +48,12 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
           </div>
           <div>
             <div className="flex items-center gap-1">
-              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight text-brand-green">manspet</span>
+              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight text-brand-green">MANS.PET</span>
               <span className="text-gray-900 font-bold">♥</span>
-              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight">taxi</span>
+              <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight">PETTAXI</span>
             </div>
-            <p className="text-[9px] text-gray-400 font-display font-medium tracking-widest uppercase -mt-0.5">
-              manspet taxi
+            <p className="text-[9px] text-gray-400 font-display font-semibold tracking-widest uppercase -mt-0.5">
+              MANS.PET PETTAXI
             </p>
           </div>
         </div>

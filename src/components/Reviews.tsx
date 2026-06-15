@@ -63,7 +63,7 @@ export default function Reviews({ reviews, onAddReview }: ReviewsProps) {
           Reviews Room
         </span>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-          manspet taxi를 직접 타본 실승객 후기 보드
+          MANS.PET PETTAXI를 직접 타본 실승객 후기 보드
         </h2>
         <p className="text-sm sm:text-base text-gray-600">
           견주님, 묘주님들의 진 솔 지극한 행복 이동 기록을 언제든지 편하게 확인하고 등록하실 수 있습니다.
@@ -112,7 +112,7 @@ export default function Reviews({ reviews, onAddReview }: ReviewsProps) {
             </div>
             <h3 className="text-lg sm:text-xl font-black text-gray-950 flex items-center gap-2">
               <Smile className="w-5.5 h-5.5 text-emerald-500" />
-              네이버 방문자 리뷰 "이런 점이 좋았어요" (manspet taxi)
+              네이버 방문자 리뷰 "이런 점이 좋았어요" (MANS.PET PETTAXI)
             </h3>
             <p className="text-[11px] text-gray-500">실제 네이버 영수증/인증 후기에서 견주님들이 직접 선택한 누적 키워드 통계입니다.</p>
           </div>
