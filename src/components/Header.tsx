@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, Menu, X, PawPrint, Shield } from 'lucide-react';
+import { Phone, MessageCircle, MessageSquare, Menu, X, PawPrint, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { SiteConfig } from '../types';
 
@@ -93,7 +93,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
 
           {/* Naver TalkTalk (Green) */}
           <a
-            href="https://talk.naver.com/"
+            href={siteConfig.naverTalktalkUrl || 'https://talk.naver.com/'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[#03c75a] hover:bg-[#02b350] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
@@ -103,6 +103,21 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
             <div className="text-left leading-tight">
               <p className="text-[10px] text-emerald-100 font-normal">네이버 톡톡 상담하기</p>
               <p className="text-xs font-bold">실시간 간편 문의</p>
+            </div>
+          </a>
+
+          {/* KakaoTalk Channel (Yellow) */}
+          <a
+            href={siteConfig.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#FEE500] hover:bg-[#FADC00] text-[#3C1E1E] px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
+            id="btn-kakao-channel-header"
+          >
+            <MessageSquare className="w-4 h-4 fill-[#3C1E1E] text-[#3C1E1E]" />
+            <div className="text-left leading-tight">
+              <p className="text-[10px] text-[#5C3F1E] font-normal">카카오톡 채널 상담</p>
+              <p className="text-xs font-bold font-sans">실시간 카톡 문의</p>
             </div>
           </a>
         </div>
@@ -130,25 +145,37 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
       {/* Navigation - Mobile Drawer */}
       {isMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2 animate-fadeIn" id="mobile-drawer">
-          <div className="grid grid-cols-2 gap-2 pb-3 mb-2 border-b border-gray-100">
+          <div className="grid grid-cols-3 gap-1.5 pb-3 mb-2 border-b border-gray-100">
             <a
               href={`tel:${siteConfig.phone}`}
-              className="flex items-center justify-center gap-2 bg-brand-green text-white py-3 rounded-xl text-xs font-bold"
+              className="flex flex-col items-center justify-center gap-1 bg-brand-green text-white py-2 rounded-xl text-[11px] font-bold"
             >
               <Phone className="w-4 h-4 fill-white" />
-              전화 연결
+              <span>전화 연결</span>
             </a>
             <a
-              href="https://talk.naver.com/"
+              href={siteConfig.naverTalktalkUrl || 'https://talk.naver.com/'}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => {
                 setIsMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-2 bg-[#03c75a] text-white py-3 rounded-xl text-xs font-bold hover:bg-[#02b350]"
+              className="flex flex-col items-center justify-center gap-1 bg-[#03c75a] text-white py-2 rounded-xl text-[11px] font-bold hover:bg-[#02b350]"
             >
               <MessageCircle className="w-4 h-4 fill-white text-white" />
-              네이버 톡톡 상담 신청
+              <span>네이버 톡톡</span>
+            </a>
+            <a
+              href={siteConfig.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG'}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                setIsMenuOpen(false);
+              }}
+              className="flex flex-col items-center justify-center gap-1 bg-[#FEE500] text-[#3C1E1E] py-2 rounded-xl text-[11px] font-bold hover:bg-[#FADC00]"
+            >
+              <MessageSquare className="w-4 h-4 fill-[#3C1E1E] text-[#3C1E1E]" />
+              <span>카카오톡</span>
             </a>
           </div>
           {menuItems.map((item) => (

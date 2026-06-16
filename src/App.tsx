@@ -16,13 +16,66 @@ import { PawPrint, Heart, Smartphone } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    const saved = localStorage.getItem('menzpet_reviews');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return INITIAL_REVIEWS;
+      }
+    }
+    return INITIAL_REVIEWS;
+  });
+
+  const [bookings, setBookings] = useState<Booking[]>(() => {
+    const saved = localStorage.getItem('menzpet_bookings');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  const [photos, setPhotos] = useState<GalleryPhoto[]>(() => {
+    const saved = localStorage.getItem('manspet_gallery_photos');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return GALLERY_PHOTOS;
+      }
+    }
+    return GALLERY_PHOTOS;
+  });
   
   // Custom CMS configurations state
-  const [siteConfig, setSiteConfig] = useState<SiteConfig>(DEFAULT_SITE_CONFIG);
-  const [fareConfig, setFareConfig] = useState<FareConfig>(DEFAULT_FARE_CONFIG);
+  const [siteConfig, setSiteConfig] = useState<SiteConfig>(() => {
+    const saved = localStorage.getItem('manspet_site_config');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return DEFAULT_SITE_CONFIG;
+      }
+    }
+    return DEFAULT_SITE_CONFIG;
+  });
+
+  const [fareConfig, setFareConfig] = useState<FareConfig>(() => {
+    const saved = localStorage.getItem('manspet_fare_config');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return DEFAULT_FARE_CONFIG;
+      }
+    }
+    return DEFAULT_FARE_CONFIG;
+  });
 
   const [calculatorData, setCalculatorData] = useState<{
     petType: 'dog' | 'cat' | 'special';
@@ -31,62 +84,6 @@ export default function App() {
     options: string[];
     fare: number;
   } | null>(null);
-
-  // Load configs from localStorage on initialization, fallback to default
-  useEffect(() => {
-    const savedReviews = localStorage.getItem('menzpet_reviews');
-    if (savedReviews) {
-      try {
-        setReviews(JSON.parse(savedReviews));
-      } catch (err) {
-        setReviews(INITIAL_REVIEWS);
-      }
-    } else {
-      setReviews(INITIAL_REVIEWS);
-    }
-
-    const savedBookings = localStorage.getItem('menzpet_bookings');
-    if (savedBookings) {
-      try {
-        setBookings(JSON.parse(savedBookings));
-      } catch (err) {
-        setBookings([]);
-      }
-    }
-
-    const savedPhotos = localStorage.getItem('manspet_gallery_photos');
-    if (savedPhotos) {
-      try {
-        setPhotos(JSON.parse(savedPhotos));
-      } catch (err) {
-        setPhotos(GALLERY_PHOTOS);
-      }
-    } else {
-      setPhotos(GALLERY_PHOTOS);
-    }
-
-    const savedSite = localStorage.getItem('manspet_site_config');
-    if (savedSite) {
-      try {
-        setSiteConfig(JSON.parse(savedSite));
-      } catch (err) {
-        setSiteConfig(DEFAULT_SITE_CONFIG);
-      }
-    } else {
-      setSiteConfig(DEFAULT_SITE_CONFIG);
-    }
-
-    const savedFare = localStorage.getItem('manspet_fare_config');
-    if (savedFare) {
-      try {
-        setFareConfig(JSON.parse(savedFare));
-      } catch (err) {
-        setFareConfig(DEFAULT_FARE_CONFIG);
-      }
-    } else {
-      setFareConfig(DEFAULT_FARE_CONFIG);
-    }
-  }, []);
 
   // Sync state helpers
   const handleAddReview = (newReviewData: Omit<Review, 'id' | 'date'>) => {
@@ -148,7 +145,7 @@ export default function App() {
         return (
           <FareCalculator 
             fareConfig={fareConfig}
-            onApplyForBooking={handleApplyBookingFromCalculator} 
+            siteConfig={siteConfig}
           />
         );
       case 'reviews':
@@ -196,7 +193,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col justify-between" id="app-root-container">
+    <div className="min-h-screen bg-bg-light flex flex-col justify-between" id="app-root-container">
       <div>
         {/* Navigation Header */}
         <Header activeTab={activeTab} setActiveTab={setActiveTab} siteConfig={siteConfig} />
@@ -265,7 +262,9 @@ export default function App() {
             <div className="flex gap-4">
               <button onClick={() => setActiveTab('guide')} className="hover:underline">이용약관</button>
               <span>|</span>
-              <a href="https://talk.naver.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">네이버 톡톡 실시간 문의</a>
+              <a href={siteConfig.naverTalktalkUrl || "https://talk.naver.com/"} target="_blank" rel="noopener noreferrer" className="hover:underline text-emerald-500">네이버 톡톡 상담</a>
+              <span>|</span>
+              <a href={siteConfig.kakaoChannelUrl || "https://pf.kakao.com/_xgpxkxbG"} target="_blank" rel="noopener noreferrer" className="hover:underline text-yellow-500">카카오톡 채널 상담</a>
               <span>|</span>
               <button onClick={() => setActiveTab('fare')} className="hover:underline">요금정책 고시</button>
             </div>

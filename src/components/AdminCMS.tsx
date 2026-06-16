@@ -485,6 +485,17 @@ export default function AdminCMS({
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">카카오톡 채널 URL 주소</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. https://pf.kakao.com/..."
+                      value={siteDraft.kakaoChannelUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, kakaoChannelUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-gray-150">
@@ -608,6 +619,103 @@ export default function AdminCMS({
                     <Save className="w-4 h-4 fill-white text-white" />
                     새 요금 보장 가중치 설정 저장
                   </button>
+                </div>
+
+                {/* 요금표 이미지 업로드 관리 */}
+                <div className="border-t border-gray-150 pt-6 space-y-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-3 bg-brand-green rounded-full"></span>
+                    <h4 className="text-sm font-black text-gray-900">공식 요금표 이미지 업로드 및 관리</h4>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    실제 운임표 이미지 파일(JPG, PNG, GIF 등)을 여기에 업로드하면, 고객 "요금안내" 화면에 해당 고해상도 이미지가 우선 적용되어 노출됩니다.
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                if (event.target?.result) {
+                                  setSiteDraft(prev => ({ ...prev, fareTableImageUrl: event.target?.result as string }));
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="hidden"
+                          id="fare-table-image-upload"
+                        />
+                        <label
+                          htmlFor="fare-table-image-upload"
+                          className="bg-brand-green/15 hover:bg-brand-green/20 text-brand-green font-extrabold px-4 py-2.5 rounded-xl text-xs cursor-pointer transition-colors"
+                        >
+                          컴퓨터에서 요금표 사진 찾아보기 📂
+                        </label>
+                        {siteDraft.fareTableImageUrl && (
+                          <button
+                            onClick={() => {
+                              if (confirm('설정된 요금표 이미지를 지우고 기본 HTML 요금표 디자인으로 복구하시겠습니까?')) {
+                                setSiteDraft(prev => ({ ...prev, fareTableImageUrl: '' }));
+                              }
+                            }}
+                            className="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-4 py-2.5 rounded-xl text-xs cursor-pointer transition-colors border border-rose-200/40"
+                          >
+                            초기화 및 기본 복구 🗑️
+                          </button>
+                        )}
+                      </div>
+                      
+                      {/* URL direct insert for flexibility */}
+                      <div className="space-y-1.5 pt-2">
+                        <label className="text-xs font-bold text-gray-700 block">또는 요금표 이미지 외부 URL 직접 주소 입력</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. https://.../image.jpg"
+                          value={siteDraft.fareTableImageUrl || ''}
+                          onChange={(e) => setSiteDraft(prev => ({ ...prev, fareTableImageUrl: e.target.value }))}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="border border-dashed border-gray-200 p-4 rounded-xl flex flex-col items-center justify-center min-h-[140px] bg-gray-50/50">
+                      {siteDraft.fareTableImageUrl ? (
+                        <div className="relative w-full max-h-48 overflow-y-auto rounded-lg shadow-sm border border-gray-100 bg-white p-1">
+                          <img
+                            src={siteDraft.fareTableImageUrl}
+                            alt="업로드된 요금표"
+                            className="w-full h-auto object-contain"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      ) : (
+                        <div className="text-center text-gray-400 space-y-1 py-4">
+                          <p className="text-xs font-bold">등록된 이미지 요금표가 없습니다.</p>
+                          <p className="text-[10px] text-gray-500">미등록 시, 수동 제작된 영문/국문 텍스트 요금표가 자동 송출됩니다.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => {
+                        onUpdateSiteConfig(siteDraft);
+                        triggerNotification('공식 요금표 파일 설정이 실시간 업로드 및 저장되었습니다! 💚');
+                      }}
+                      className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+                    >
+                      <Save className="w-3.5 h-3.5 fill-white text-white" />
+                      요금표 이미지 및 URL 정보 저장 고시
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

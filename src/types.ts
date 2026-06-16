@@ -48,6 +48,8 @@ export interface SiteConfig {
   naverTalktalkUrl?: string;
   instagramUrl?: string;
   naverTvUrl?: string;
+  kakaoChannelUrl?: string;
+  fareTableImageUrl?: string;
 }
 
 export interface FareConfig {

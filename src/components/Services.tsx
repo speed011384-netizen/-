@@ -127,14 +127,15 @@ export default function Services({ setActiveTab }: ServicesProps) {
         {/* Right Side: Showcase Illustration Image */}
         <div className="lg:col-span-5 relative min-h-[220px] lg:min-h-full bg-slate-50 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-tr from-brand-green/15 to-transparent z-10 pointer-events-none"></div>
-          {/* We'll showcase appropriate beautiful Unsplash images for each type of service */}
+          {/* Cute custom generated service illustrations */}
           <img
             src={
-              selectedService === 'hospital' ? 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&q=80&w=600' :
-              selectedService === 'grooming' ? 'https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=600' :
-              selectedService === 'airport' ? 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=600' :
-              selectedService === 'long-distance' ? 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=600' :
-              'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&q=80&w=600'
+              selectedService === 'hospital' ? '/src/assets/images/service_hospital_1781607087767.jpg' :
+              selectedService === 'grooming' ? '/src/assets/images/service_grooming_1781607104399.jpg' :
+              selectedService === 'airport' ? '/src/assets/images/service_airport_1781607118815.jpg' :
+              selectedService === 'long-distance' ? '/src/assets/images/service_long_distance_1781607132825.jpg' :
+              selectedService === 'adoption' ? '/src/assets/images/service_adoption_1781607148468.jpg' :
+              '/src/assets/images/service_hospital_1781607087767.jpg'
             }
             alt={activeServiceData.title}
             className="w-full h-full object-cover"

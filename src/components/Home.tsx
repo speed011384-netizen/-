@@ -37,9 +37,26 @@ interface HomeProps {
 
 export default function Home({ setActiveTab, reviews, photos = [], siteConfig }: HomeProps) {
   const [activePhotoCategory, setActivePhotoCategory] = useState<'all' | 'dog' | 'cat' | 'special'>('all');
-  const [slides, setSlides] = useState(bannerSlides);
+  const [slides, setSlides] = useState(() => {
+    const saved = localStorage.getItem('manspet_banner_slides');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return bannerSlides;
+      }
+    }
+    return bannerSlides;
+  });
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isEditingBanners, setIsEditingBanners] = useState(false);
+
+  // Sync to localStorage
+  useEffect(() => {
+    if (slides && slides.length > 0) {
+      localStorage.setItem('manspet_banner_slides', JSON.stringify(slides));
+    }
+  }, [slides]);
 
   // Auto-rotate banner slides every 3 seconds
   useEffect(() => {
@@ -50,21 +67,28 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Handle upload of new banner image(s) from user's device
+  // Handle upload of new banner image(s) from user's device (DURABLE BASE64!)
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const newSlides = [...slides];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const imageUrl = URL.createObjectURL(file);
-        newSlides.push({
-          image: imageUrl,
-          alt: `사용자 지정 배너 - ${file.name}`
+      const promises = Array.from(files).map((file: File) => {
+        return new Promise<{ image: string; alt: string }>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve({
+              image: reader.result as string,
+              alt: `사용자 지정 배너 - ${file.name}`
+            });
+          };
+          reader.readAsDataURL(file);
         });
-      }
-      setSlides(newSlides);
-      setCurrentBannerIndex(newSlides.length - 1); // Select the newly uploaded slide
+      });
+
+      Promise.all(promises).then(newUploadedSlides => {
+        const updatedSlides = [...slides, ...newUploadedSlides];
+        setSlides(updatedSlides);
+        setCurrentBannerIndex(updatedSlides.length - 1); // Select the newly uploaded slide
+      });
     }
   };
 
@@ -171,33 +195,48 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="flex flex-col sm:flex-row gap-4 pt-1 justify-center lg:justify-start"
+                className="flex flex-col md:flex-row gap-3 pt-1 justify-center lg:justify-start"
               >
                 {/* Phone Green CTA button */}
                 <a
                   href="tel:010-7644-0799"
-                  className="flex items-center justify-center gap-3 bg-brand-green hover:bg-brand-green-hover text-white px-7 py-4 rounded-2xl font-bold shadow-lg shadow-green-900/10 hover:shadow-xl transition-all cursor-pointer group"
+                  className="flex items-center justify-center gap-3 bg-brand-green hover:bg-brand-green-hover text-white px-5 py-4 rounded-2xl font-bold shadow-lg shadow-green-900/10 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
                   id="hero-btn-phone"
                 >
                   <Phone className="w-5 h-5 fill-white group-hover:animate-bounce" />
                   <div className="text-left">
-                    <p className="text-lg font-extrabold tracking-tight">010-7644-0799</p>
-                    <p className="text-[11px] opacity-80 font-normal">24시간 전화 즉시 실시간 전화 상담하기</p>
+                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">010-7644-0799</p>
+                    <p className="text-[10px] opacity-80 font-normal">24시간 전화 즉시 상담하기</p>
                   </div>
                 </a>
 
                 {/* Naver TalkTalk Green CTA button */}
                 <a
-                  href="https://talk.naver.com/"
+                  href={siteConfig?.naverTalktalkUrl || "https://talk.naver.com/"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-[#03c75a] hover:bg-[#02b350] text-white px-7 py-4 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group"
+                  className="flex items-center justify-center gap-3 bg-[#03c75a] hover:bg-[#02b350] text-white px-5 py-4 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
                   id="hero-btn-naver-talktalk"
                 >
                   <MessageCircle className="w-5 h-5 fill-white text-white group-hover:scale-105 transition-transform" />
                   <div className="text-left">
-                    <p className="text-lg font-extrabold tracking-tight">네이버 톡톡 상담</p>
-                    <p className="text-[11px] text-emerald-100 font-normal">실시간 톡톡으로 즉석 대기 상담하기</p>
+                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">네이버 톡톡 상담</p>
+                    <p className="text-[10px] text-emerald-100 font-normal">실시간 톡톡으로 빠른 상담하기</p>
+                  </div>
+                </a>
+
+                {/* KakaoTalk Channel Yellow CTA button */}
+                <a
+                  href={siteConfig?.kakaoChannelUrl || "https://pf.kakao.com/_xgpxkxbG"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 bg-[#FEE500] hover:bg-[#FADC00] text-[#3C1E1E] px-5 py-4 rounded-2xl font-bold shadow-lg shadow-yellow-500/15 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
+                  id="hero-btn-kakao-channel"
+                >
+                  <MessageSquare className="w-5 h-5 fill-[#3C1E1E] text-[#3C1E1E] group-hover:scale-105 transition-transform" />
+                  <div className="text-left">
+                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">카톡 채널 상담</p>
+                    <p className="text-[10px] text-[#5C3F1E] font-normal">24시간 카카오 채널 대화하기</p>
                   </div>
                 </a>
               </motion.div>
@@ -294,7 +333,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             {/* 1. 네이버 블로그 (Naver Blog) */}
             <motion.a
               href={siteConfig?.naverBlogUrl || 'https://blog.naver.com/speed011384'}
@@ -334,12 +373,34 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                 <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-[#03c75a]" />
               </div>
               <div className="mt-4">
-                <p className="text-xs font-extrabold text-gray-900 leading-none">네이버 톡톡 실시간 상담</p>
+                <p className="text-xs font-extrabold text-gray-900 leading-none">네이버 톡톡 상담</p>
                 <p className="text-[10px] text-gray-500 mt-1 leading-tight line-clamp-2">"네이버 톡톡" 간편 접속으로 손쉽게 요금을 체크하고 인공지능 즉석 상담을 받으세요.</p>
               </div>
             </motion.a>
 
-            {/* 3. 인스타그램 (Instagram) */}
+            {/* 3. 카카오톡 채널 (KakaoTalk Channel) */}
+            <motion.a
+              href={siteConfig?.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG'}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative bg-[#FEE500]/5 hover:bg-[#FEE500]/10 border border-[#FEE500]/25 p-5 rounded-2xl flex flex-col justify-between transition-all cursor-pointer h-36"
+              id="sns-card-kakao-channel"
+            >
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-xl bg-[#FEE500] flex items-center justify-center text-[#3C1E1E] shadow-sm">
+                  <MessageSquare className="w-5 h-5 fill-[#3C1E1E] text-[#3C1E1E]" />
+                </div>
+                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-amber-600" />
+              </div>
+              <div className="mt-4">
+                <p className="text-xs font-extrabold text-gray-900 leading-none">카카오톡 채널</p>
+                <p className="text-[10px] text-gray-500 mt-1 leading-tight line-clamp-2">편리한 공식 카톡 채널을 통해 펫택시 요금 안내와 수송 예약을 상시 진행해보세요.</p>
+              </div>
+            </motion.a>
+
+            {/* 4. 인스타그램 (Instagram) */}
             <motion.a
               href={siteConfig?.instagramUrl || 'https://www.instagram.com/menzpet_taxi/'}
               target="_blank"
@@ -361,7 +422,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
               </div>
             </motion.a>
 
-            {/* 4. 네이버 TV */}
+            {/* 5. 네이버 TV */}
             <motion.a
               href={siteConfig?.naverTvUrl || 'https://tv.naver.com/'}
               target="_blank"
