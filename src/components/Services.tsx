@@ -6,6 +6,12 @@ import {
 import { useState } from 'react';
 import { SERVICES } from '../data';
 
+import serviceHospitalImg from '../assets/images/service_hospital_1781607087767.jpg';
+import serviceGroomingImg from '../assets/images/service_grooming_1781607104399.jpg';
+import serviceAirportImg from '../assets/images/service_airport_1781607118815.jpg';
+import serviceLongDistanceImg from '../assets/images/service_long_distance_1781607132825.jpg';
+import serviceAdoptionImg from '../assets/images/service_adoption_1781607148468.jpg';
+
 interface ServicesProps {
   setActiveTab: (tab: string) => void;
 }
@@ -130,12 +136,12 @@ export default function Services({ setActiveTab }: ServicesProps) {
           {/* Cute custom generated service illustrations */}
           <img
             src={
-              selectedService === 'hospital' ? '/src/assets/images/service_hospital_1781607087767.jpg' :
-              selectedService === 'grooming' ? '/src/assets/images/service_grooming_1781607104399.jpg' :
-              selectedService === 'airport' ? '/src/assets/images/service_airport_1781607118815.jpg' :
-              selectedService === 'long-distance' ? '/src/assets/images/service_long_distance_1781607132825.jpg' :
-              selectedService === 'adoption' ? '/src/assets/images/service_adoption_1781607148468.jpg' :
-              '/src/assets/images/service_hospital_1781607087767.jpg'
+              selectedService === 'hospital' ? serviceHospitalImg :
+              selectedService === 'grooming' ? serviceGroomingImg :
+              selectedService === 'airport' ? serviceAirportImg :
+              selectedService === 'long-distance' ? serviceLongDistanceImg :
+              selectedService === 'adoption' ? serviceAdoptionImg :
+              serviceHospitalImg
             }
             alt={activeServiceData.title}
             className="w-full h-full object-cover"

@@ -4,6 +4,7 @@ import {
   Clock, Shield, Info, ExternalLink, Calendar, User, FileText, ChevronRight, Plus
 } from 'lucide-react';
 import { FareConfig, SiteConfig } from '../types';
+import luxuryVanImg from '../assets/images/menzpet_luxury_van_1781606817371.jpg';
 
 interface FareCalculatorProps {
   fareConfig?: FareConfig;
@@ -87,7 +88,7 @@ export default function FareCalculator({ fareConfig, siteConfig }: FareCalculato
             {/* Premium Generated Black SUV Asset */}
             <div className="relative w-full max-w-[280px] md:max-w-[320px] shrink-0 border border-neutral-100 rounded-2xl overflow-hidden bg-white shadow-2xs">
               <img 
-                src="/src/assets/images/menzpet_luxury_van_1781606817371.jpg" 
+                src={luxuryVanImg} 
                 alt="MANSPET Luxury SUV"
                 className="w-full h-auto object-cover"
                 referrerPolicy="no-referrer"
