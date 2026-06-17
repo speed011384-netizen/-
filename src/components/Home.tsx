@@ -359,7 +359,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                 <MessageSquare className="w-5.5 h-5.5 fill-[#3C1E1E] text-[#3C1E1E] group-hover:scale-105 transition-transform" />
                 <div className="text-left">
                   <p className="text-base sm:text-lg font-extrabold tracking-tight">카톡 상담</p>
-                  <p className="text-[11px] text-[#5C3F1E] font-normal">실시간 카스 채널 대화</p>
+                  <p className="text-[11px] text-[#5C3F1E] font-normal">실시간 카톡채널 대화</p>
                 </div>
               </a>
             </div>
