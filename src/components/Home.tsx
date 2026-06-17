@@ -52,8 +52,13 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          return bannerSlides;
+        }
+
         // Clean up or replace old stale images with the new logo-optimized airport banner
         const migrated = parsed.map((slide: any) => {
+          if (!slide || !slide.image) return null;
           if (slide.image && (slide.image.includes('menzpet_airport_banner_1781703681823') || slide.image === '/src/assets/images/menzpet_airport_banner_1781703681823.jpg')) {
             return {
               ...slide,
@@ -62,7 +67,11 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
             };
           }
           return slide;
-        });
+        }).filter(Boolean);
+
+        if (migrated.length === 0) {
+          return bannerSlides;
+        }
         return migrated;
       } catch (err) {
         return bannerSlides;
@@ -73,10 +82,14 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isEditingBanners, setIsEditingBanners] = useState(false);
 
-  // Sync to localStorage
+  // Sync to localStorage with safety blocks
   useEffect(() => {
     if (slides && slides.length > 0) {
-      localStorage.setItem('manspet_banner_slides', JSON.stringify(slides));
+      try {
+        localStorage.setItem('manspet_banner_slides', JSON.stringify(slides));
+      } catch (err) {
+        console.warn('Local storage quota exceeded. Saving in session state only.', err);
+      }
     }
   }, [slides]);
 
@@ -89,27 +102,64 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Handle upload of new banner image(s) from user's device (DURABLE BASE64!)
+  // Compress image before storage to prevent QuotaExceededError and keep performance high
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Downscale threshold for perfect quality yet small storage footprint
+          const MAX_WIDTH = 1920;
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(reader.result as string);
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          // Convert to JPEG with 0.8 quality factor (reduces multi-megabyte source into ~150kb)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(dataUrl);
+        };
+        img.onerror = () => {
+          resolve(reader.result as string);
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle upload of new banner image(s) with downscale compression
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const promises = Array.from(files).map((file: File) => {
-        return new Promise<{ image: string; alt: string }>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            resolve({
-              image: reader.result as string,
-              alt: `사용자 지정 배너 - ${file.name}`
-            });
-          };
-          reader.readAsDataURL(file);
-        });
+        return compressImage(file).then(compressedBase64 => ({
+          image: compressedBase64,
+          alt: `사용자 지정 배너 - ${file.name}`
+        }));
       });
 
       Promise.all(promises).then(newUploadedSlides => {
         const updatedSlides = [...slides, ...newUploadedSlides];
         setSlides(updatedSlides);
-        setCurrentBannerIndex(updatedSlides.length - 1); // Select the newly uploaded slide
+        setCurrentBannerIndex(updatedSlides.length - 1); // Focus the slide
+      }).catch(err => {
+        console.error('Error processing banner image:', err);
       });
     }
   };
@@ -126,6 +176,9 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
   // Restore the original slides setup
   const handleResetBanners = () => {
+    try {
+      localStorage.removeItem('manspet_banner_slides');
+    } catch (e) {}
     setSlides(bannerSlides);
     setCurrentBannerIndex(0);
   };
@@ -138,14 +191,14 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
   return (
     <div className="space-y-12 pb-16" id="home-view">
-      {/* 1. HERO TOP BANNER SLIDER (Full-width prominent premium slide-show) */}
+      {/* 1. HERO TOP BANNER SLIDER (Full-width prominent premium slide-show with exact 1920x700 scale) */}
       <section className="relative overflow-hidden bg-white" id="hero-banner-top-section">
-        <div className="max-w-[1420px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4">
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl border-2 sm:border-4 border-white w-full aspect-[2/1] sm:aspect-[2.4/1] lg:aspect-[2.6/1] xl:aspect-[2.8/1] bg-gray-50 group"
+            className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl border-2 sm:border-4 border-white w-full aspect-[1920/700] bg-gray-50 group"
             id="hero-image-wrapper"
           >
             <div className="absolute inset-0 w-full h-full">
