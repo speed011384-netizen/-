@@ -12,8 +12,18 @@ import { Review, GalleryPhoto, SiteConfig } from '../types';
 import menzpetBanner from '../assets/images/menzpet_banner_1781229718829.jpg';
 import menzpetBannerWithCat from '../assets/images/menzpet_banner_with_cat_1781445861262.jpg';
 import menzpetBannerSmallDog from '../assets/images/menzpet_banner_small_dog_1781446007378.jpg';
+import menzpetAirportBanner from '../assets/images/menzpet_airport_banner_logo_1781703921038.jpg';
+import menzpetIllustrationBanner from '../assets/images/menzpet_illustration_banner_1781703701586.jpg';
 
 const bannerSlides = [
+  {
+    image: menzpetIllustrationBanner,
+    alt: "맨즈펫 펫택시 안심 수송 서비스 - 귀여운 반려견 일러스트 테마"
+  },
+  {
+    image: menzpetAirportBanner,
+    alt: "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
+  },
   {
     image: menzpetBanner,
     alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 골든 리트리버"
@@ -41,7 +51,19 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     const saved = localStorage.getItem('manspet_banner_slides');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Clean up or replace old stale images with the new logo-optimized airport banner
+        const migrated = parsed.map((slide: any) => {
+          if (slide.image && (slide.image.includes('menzpet_airport_banner_1781703681823') || slide.image === '/src/assets/images/menzpet_airport_banner_1781703681823.jpg')) {
+            return {
+              ...slide,
+              image: menzpetAirportBanner,
+              alt: "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
+            };
+          }
+          return slide;
+        });
+        return migrated;
       } catch (err) {
         return bannerSlides;
       }
@@ -116,41 +138,96 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
   return (
     <div className="space-y-12 pb-16" id="home-view">
-      {/* 1. HERO SECTION (Designed to precisely match user's image) */}
-      <section className="relative overflow-hidden bg-white border-b border-gray-100" id="hero-section">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* 1. HERO TOP BANNER SLIDER (Full-width prominent premium slide-show) */}
+      <section className="relative overflow-hidden bg-white" id="hero-banner-top-section">
+        <div className="max-w-[1420px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl border-2 sm:border-4 border-white w-full aspect-[2/1] sm:aspect-[2.4/1] lg:aspect-[2.6/1] xl:aspect-[2.8/1] bg-gray-50 group"
+            id="hero-image-wrapper"
+          >
+            <div className="absolute inset-0 w-full h-full">
+              <AnimatePresence mode="wait">
+                {slides[currentBannerIndex] ? (
+                  <motion.img
+                    key={currentBannerIndex}
+                    src={slides[currentBannerIndex].image}
+                    alt={slides[currentBannerIndex].alt}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0 object-cover w-full h-full transform group-hover:scale-[1.02] transition-transform duration-700"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-450 text-xs">
+                    등록된 배너 이미지가 없습니다.
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
             
-            {/* Left Content Column */}
-            <div className="lg:col-span-6 z-10 space-y-6 lg:pr-4">
-              <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-2 text-center lg:text-left"
-              >
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-green-light rounded-full text-brand-green text-xs font-bold font-display italic">
-                  <Heart className="w-3.5 h-3.5 fill-brand-green text-brand-green" />
-                  사랑하는 아이, 안전하고 편안하게!
-                </div>
-                
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                  안전한 반려동물 <br className="hidden sm:inline" />
-                  <span className="text-brand-green text-shadow-sm">이동 서비스</span>
-                </h1>
-                
-                <p className="text-base sm:text-lg text-gray-600 font-medium">
-                  병원 · 미용 · 공항 · 장거리 · 입양 이동 전문
-                </p>
-              </motion.div>
+            {/* Small Elegant Floating Watermark Logo on the Banner Image */}
+            <div className="absolute top-3 sm:top-5 right-3 sm:right-5 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-xl border border-gray-100 flex items-center gap-1.5 shadow-sm pointer-events-none hover:opacity-100 transition-opacity z-10">
+              <span className="text-xs">🐾</span>
+              <span className="text-[10px] sm:text-xs font-black tracking-tight text-gray-900">MANS.PET <span className="text-brand-green">PETTAXI</span></span>
+            </div>
 
-              {/* 5 Circular Bullet Points precisely matching the image icons list */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-                className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-3 pt-2 text-sm text-gray-700 font-semibold"
-              >
+            {/* Trigger Button to Edit Banners directly */}
+            <button
+              type="button"
+              onClick={() => setIsEditingBanners(true)}
+              className="absolute bottom-3 sm:bottom-5 left-3 sm:left-5 bg-black/60 hover:bg-black/85 text-white rounded-xl px-3 py-2 flex items-center gap-2 shadow-md border border-white/10 text-xs font-bold active:scale-95 transition-all z-10 hover:border-brand-green/30 cursor-pointer"
+              id="btn-edit-banner"
+            >
+              <Camera className="w-4 h-4 fill-white/10" />
+              <span>배너 직접 변경</span>
+            </button>
+
+            {/* Slideshow Progress Dot Indicators */}
+            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-1.5 bg-black/35 backdrop-blur-xs rounded-full z-10 border border-white/10">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentBannerIndex(i)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === currentBannerIndex 
+                      ? 'bg-brand-green w-4' 
+                      : 'bg-white/60 hover:bg-white'
+                  }`}
+                  aria-label={`${i + 1}번 배너로 이동`}
+                />
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 1.5 HERO CONTENT & CTA LINKS SECTION (Positioned elegant and large below the slider) */}
+      <section className="bg-white border-b border-gray-100 pb-8" id="hero-action-section">
+        <div className="max-w-[1420px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-neutral-55 rounded-3xl border border-gray-100 p-6 md:p-8 lg:p-10 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8">
+            
+            {/* Left Texts & Circular Bullet Points */}
+            <div className="space-y-5 lg:max-w-2xl text-center lg:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-brand-green-light rounded-full text-brand-green text-xs sm:text-sm font-bold font-display italic">
+                <Heart className="w-4 h-4 fill-brand-green text-brand-green" />
+                사랑하는 아이, 안전하고 편안하게!
+              </div>
+              
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                안전한 반려동물 <span className="text-brand-green text-shadow-sm">이동 서비스</span>
+              </h1>
+              
+              <p className="text-sm sm:text-base text-gray-650 font-medium">
+                병원 · 미용 · 공항 · 장거리 · 입양 이동 전문 전용 택시
+              </p>
+
+              {/* 5 Bullet Icons matching original image design for brand validity */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-x-5 gap-y-2.5 pt-2 text-xs sm:text-sm text-gray-700 font-semibold">
                 <div className="flex items-center gap-1.5" id="bullet-safety">
                   <div className="bg-brand-green-light p-1 rounded-full text-brand-green">
                     <ShieldCheck className="w-4 h-4" />
@@ -169,7 +246,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                   </div>
                   <span>전국 운행</span>
                 </div>
-                <div className="flex items-center gap-1.5" id="bullet-booking shadow">
+                <div className="flex items-center gap-1.5" id="bullet-booking">
                   <div className="bg-brand-green-light p-1 rounded-full text-brand-green">
                     <Clock className="w-4 h-4" />
                   </div>
@@ -181,138 +258,59 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                   </div>
                   <span>실시간 소통</span>
                 </div>
-              </motion.div>
-
-              {/* Move '우리 아이의 안전한 동행' phrase directly above phone CTA buttons */}
-              <div className="text-center lg:text-left pt-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-brand-green border border-brand-green/20 rounded-lg text-sm font-black" id="premium-safe-companion-caption">
-                  ✨ 우리 아이의 안전한 동행
-                </span>
               </div>
 
-              {/* Huge CTAs matching colors of original image phone + kakaotalk */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="flex flex-col md:flex-row gap-3 pt-1 justify-center lg:justify-start"
-              >
-                {/* Phone Green CTA button */}
-                <a
-                  href="tel:010-7644-0799"
-                  className="flex items-center justify-center gap-3 bg-brand-green hover:bg-brand-green-hover text-white px-5 py-4 rounded-2xl font-bold shadow-lg shadow-green-900/10 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
-                  id="hero-btn-phone"
-                >
-                  <Phone className="w-5 h-5 fill-white group-hover:animate-bounce" />
-                  <div className="text-left">
-                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">010-7644-0799</p>
-                    <p className="text-[10px] opacity-80 font-normal">24시간 전화 즉시 상담하기</p>
-                  </div>
-                </a>
-
-                {/* Naver TalkTalk Green CTA button */}
-                <a
-                  href={siteConfig?.naverTalktalkUrl || "https://talk.naver.com/"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-[#03c75a] hover:bg-[#02b350] text-white px-5 py-4 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
-                  id="hero-btn-naver-talktalk"
-                >
-                  <MessageCircle className="w-5 h-5 fill-white text-white group-hover:scale-105 transition-transform" />
-                  <div className="text-left">
-                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">네이버 톡톡 상담</p>
-                    <p className="text-[10px] text-emerald-100 font-normal">실시간 톡톡으로 빠른 상담하기</p>
-                  </div>
-                </a>
-
-                {/* KakaoTalk Channel Yellow CTA button */}
-                <a
-                  href={siteConfig?.kakaoChannelUrl || "https://pf.kakao.com/_xgpxkxbG"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-[#FEE500] hover:bg-[#FADC00] text-[#3C1E1E] px-5 py-4 rounded-2xl font-bold shadow-lg shadow-yellow-500/15 hover:shadow-xl transition-all cursor-pointer group flex-1 md:flex-none"
-                  id="hero-btn-kakao-channel"
-                >
-                  <MessageSquare className="w-5 h-5 fill-[#3C1E1E] text-[#3C1E1E] group-hover:scale-105 transition-transform" />
-                  <div className="text-left">
-                    <p className="text-[15px] md:text-base font-extrabold tracking-tight">카톡 채널 상담</p>
-                    <p className="text-[10px] text-[#5C3F1E] font-normal">24시간 카카오 채널 대화하기</p>
-                  </div>
-                </a>
-              </motion.div>
+              <div className="pt-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-brand-green border border-brand-green/20 rounded-lg text-xs sm:text-sm font-black" id="premium-safe-companion">- 맨즈펫 펫택시가 동행합니다 ✨</span>
+              </div>
             </div>
 
-            {/* Right Images Column (with matching car-seat puppy background & badges) */}
-            <div className="lg:col-span-6 relative flex justify-center items-center mt-6 lg:mt-0">
-              {/* Outer Glow Ring */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-green/5 to-transparent rounded-3xl -m-4"></div>
-              
-              {/* Core Image container framed beautifully */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white max-w-md md:max-w-xl w-full aspect-[16/9] bg-gray-100 group"
-                id="hero-image-wrapper"
+            {/* Right CTAs Panel matching original design phone + kakaotalk + navertalk */}
+            <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3.5">
+              {/* Phone green CTA */}
+              <a
+                href="tel:010-7644-0799"
+                className="flex items-center justify-center gap-3.5 bg-brand-green hover:bg-brand-green-hover text-white px-6 py-4.5 rounded-2xl font-bold shadow-lg shadow-green-900/10 hover:shadow-xl transition-all cursor-pointer group flex-1"
+                id="hero-btn-phone"
               >
-                <div className="absolute inset-0 w-full h-full">
-                  <AnimatePresence mode="wait">
-                    {slides[currentBannerIndex] ? (
-                      <motion.img
-                        key={currentBannerIndex}
-                        src={slides[currentBannerIndex].image}
-                        alt={slides[currentBannerIndex].alt}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="absolute inset-0 object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-405 text-xs">
-                        등록된 배너 이미지가 없습니다.
-                      </div>
-                    )}
-                  </AnimatePresence>
+                <Phone className="w-5.5 h-5.5 fill-white group-hover:animate-bounce" />
+                <div className="text-left">
+                  <p className="text-base sm:text-lg font-extrabold tracking-tight">010-7644-0799</p>
+                  <p className="text-[11px] opacity-80 font-normal">24시간 즉시 유선 상담</p>
                 </div>
-                
-                {/* Small Elegant Floating Watermark Logo on the Banner Image */}
-                <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1 shadow-sm pointer-events-none scale-85 hover:opacity-100 transition-opacity z-10">
-                  <span className="text-[10px]">🐾</span>
-                  <span className="text-[9.5px] font-black tracking-tight text-gray-900">MANS.PET <span className="text-brand-green">PETTAXI</span></span>
+              </a>
+
+              {/* Naver TalkTalk CTA */}
+              <a
+                href={siteConfig?.naverTalktalkUrl || "https://talk.naver.com/"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3.5 bg-[#03c75a] hover:bg-[#02b350] text-white px-6 py-4.5 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group flex-1"
+                id="hero-btn-naver-talktalk"
+              >
+                <MessageCircle className="w-5.5 h-5.5 fill-white text-white group-hover:scale-105 transition-transform" />
+                <div className="text-left">
+                  <p className="text-base sm:text-lg font-extrabold tracking-tight">네이버 톡톡</p>
+                  <p className="text-[11px] text-emerald-100 font-normal">빠른 온라인 비대면 상담</p>
                 </div>
+              </a>
 
-                {/* Trigger Button to Edit Banners directly */}
-                <button
-                  type="button"
-                  onClick={() => setIsEditingBanners(true)}
-                  className="absolute bottom-2.5 left-2.5 bg-black/60 hover:bg-black/80 text-white rounded-lg px-2.5 py-1.5 flex items-center gap-1.5 shadow-md border border-white/10 text-[11px] font-semibold active:scale-95 transition-all z-10 hover:border-brand-green/35 cursor-pointer"
-                  id="btn-edit-banner"
-                >
-                  <Camera className="w-3.5 h-3.5 fill-white/10" />
-                  <span>배너 직접 변경</span>
-                </button>
-
-                {/* Slideshow Progress Dot Indicators */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 px-2.5 py-1 bg-black/35 backdrop-blur-xs rounded-full z-10 border border-white/10">
-                  {slides.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentBannerIndex(i)}
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                        i === currentBannerIndex 
-                          ? 'bg-brand-green w-3.5' 
-                          : 'bg-white/60 hover:bg-white'
-                      }`}
-                      aria-label={`${i + 1}번 배너로 이동`}
-                    />
-                  ))}
+              {/* KakaoTalk Channel CTA */}
+              <a
+                href={siteConfig?.kakaoChannelUrl || "https://pf.kakao.com/_xgpxkxbG"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3.5 bg-[#FEE500] hover:bg-[#FADC00] text-[#3C1E1E] px-6 py-4.5 rounded-2xl font-bold shadow-lg shadow-yellow-500/15 hover:shadow-xl transition-all cursor-pointer group flex-1"
+                id="hero-btn-kakao-channel"
+              >
+                <MessageSquare className="w-5.5 h-5.5 fill-[#3C1E1E] text-[#3C1E1E] group-hover:scale-105 transition-transform" />
+                <div className="text-left">
+                  <p className="text-base sm:text-lg font-extrabold tracking-tight">카톡 상담</p>
+                  <p className="text-[11px] text-[#5C3F1E] font-normal">실시간 카스 채널 대화</p>
                 </div>
-
-              </motion.div>
-
+              </a>
             </div>
+
           </div>
         </div>
       </section>
