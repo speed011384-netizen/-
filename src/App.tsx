@@ -57,7 +57,16 @@ export default function App() {
     const saved = localStorage.getItem('manspet_site_config');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Self-heal old Instagram links stored in user's browser cache
+        if (parsed && (
+          parsed.instagramUrl === 'https://www.instagram.com/menzpet_taxi/' || 
+          !parsed.instagramUrl
+        )) {
+          parsed.instagramUrl = 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3';
+          localStorage.setItem('manspet_site_config', JSON.stringify(parsed));
+        }
+        return parsed;
       } catch (err) {
         return DEFAULT_SITE_CONFIG;
       }

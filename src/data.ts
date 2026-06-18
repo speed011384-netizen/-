@@ -242,7 +242,7 @@ export const DEFAULT_SITE_CONFIG = {
   privacyOfficer: '박태웅',
   naverBlogUrl: 'https://blog.naver.com/speed011384',
   naverTalktalkUrl: 'https://talk.naver.com/',
-  instagramUrl: 'https://www.instagram.com/menzpet_taxi/',
+  instagramUrl: 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3',
   naverTvUrl: 'https://tv.naver.com/',
   kakaoChannelUrl: 'https://pf.kakao.com/_xgpxkxbG',
   fareTableImageUrl: ''

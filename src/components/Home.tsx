@@ -458,7 +458,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
             {/* 4. 인스타그램 (Instagram) */}
             <motion.a
-              href={siteConfig?.instagramUrl || 'https://www.instagram.com/menzpet_taxi/'}
+              href={siteConfig?.instagramUrl || 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}
