@@ -214,7 +214,7 @@ export default function App() {
               <div className="p-1.5 bg-brand-green text-white rounded-full">
                 <PawPrint className="w-5 h-5 fill-white" />
               </div>
-              <div>
+              <div className="notranslate" translate="no">
                 <p className="font-extrabold text-white text-base tracking-tight">MANS.PET PETTAXI</p>
                 <p className="text-[9px] text-neutral-500 font-display font-semibold uppercase tracking-widest leading-none">MANS.PET PETTAXI</p>
               </div>
@@ -227,7 +227,7 @@ export default function App() {
                 대표전화: {siteConfig.phone}
               </a>
               <span>|</span>
-              <p className="text-neutral-400">네이버 검색창에 <strong className="text-emerald-400">"MANS.PET PETTAXI"</strong>를 검색해 톡톡으로 문의하세요</p>
+              <p className="text-neutral-400">네이버 검색창에 <strong className="text-emerald-400 notranslate" translate="no">"MANS.PET PETTAXI"</strong>를 검색해 톡톡으로 문의하세요</p>
             </div>
           </div>
 
@@ -258,7 +258,7 @@ export default function App() {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-neutral-800 text-[10px] text-neutral-600">
-            <p>© 2026 MANS.PET PETTAXI. All Rights Reserved. Designed with premium components.</p>
+            <p>© 2026 <span className="notranslate" translate="no">MANS.PET PETTAXI</span>. All Rights Reserved. Designed with premium components.</p>
             <div className="flex gap-4">
               <button onClick={() => setActiveTab('guide')} className="hover:underline">이용약관</button>
               <span>|</span>

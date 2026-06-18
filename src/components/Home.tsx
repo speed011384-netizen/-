@@ -226,7 +226,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
             {/* Small Elegant Floating Watermark Logo on the Banner Image */}
             <div className="absolute top-3 sm:top-5 right-3 sm:right-5 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-xl border border-gray-100 flex items-center gap-1.5 shadow-sm pointer-events-none hover:opacity-100 transition-opacity z-10">
               <span className="text-xs">🐾</span>
-              <span className="text-[10px] sm:text-xs font-black tracking-tight text-gray-900">MANS.PET <span className="text-brand-green">PETTAXI</span></span>
+              <span className="text-[10px] sm:text-xs font-black tracking-tight text-gray-900 notranslate" translate="no">MANS.PET <span className="text-brand-green">PETTAXI</span></span>
             </div>
 
             {/* Trigger Button to Edit Banners directly */}
@@ -375,7 +375,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
             <div>
               <h4 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-brand-green" />
-                MANS.PET PETTAXI 공식 소통 채널 바로가기
+                <span className="notranslate" translate="no">MANS.PET PETTAXI</span> 공식 소통 채널 바로가기
               </h4>
               <p className="text-xs text-gray-500 mt-1">블로그, 인스타, 카톡채널에서 실시간 소식과 후기를 보실 수 있습니다.</p>
             </div>
@@ -556,11 +556,11 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 bg-brand-green-light/40 rounded-3xl border border-brand-green-light" id="advantages-section">
         <div className="p-6 md:p-8">
           <div className="max-w-3xl mb-8">
-            <span className="text-[11px] bg-brand-green text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-[11px] bg-brand-green text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider notranslate" translate="no">
               MANS.PET PETTAXI Advantage
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mt-3">
-              MANS.PET PETTAXI만의 5가지 차별화된 든든한 강점
+              <span className="notranslate" translate="no">MANS.PET PETTAXI</span>만의 5가지 차별화된 든든한 강점
             </h2>
           </div>
 
