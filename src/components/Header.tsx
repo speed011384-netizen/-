@@ -27,7 +27,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
       <div className="hidden md:flex justify-between items-center max-w-7xl mx-auto px-6 py-2 text-xs text-gray-500 border-b border-gray-50">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
-          <span>MANS.PET PETTAXI 안전 드라이버 대기중 (24시간 상담)</span>
+          <span><span className="notranslate" translate="no">MANS.PET PETTAXI</span> 안전 드라이버 대기중 (24시간 상담)</span>
         </div>
         <div className="flex items-center gap-4">
           <span>평일/주말 상시 전용 매칭 보장</span>
@@ -46,7 +46,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
           <div className="bg-brand-green p-2 text-white rounded-full shadow-md group-hover:scale-105 transition-transform">
             <PawPrint className="w-6 h-6" />
           </div>
-          <div>
+          <div className="notranslate" translate="no">
             <div className="flex items-center gap-1">
               <span className="font-extrabold text-xl lg:text-2xl text-gray-900 tracking-tight text-brand-green">MANS.PET</span>
               <span className="text-gray-900 font-bold">♥</span>

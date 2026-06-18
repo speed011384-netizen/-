@@ -138,17 +138,52 @@ export default function AdminCMS({
     }
   };
 
+  // Compress image before CMS draft saving to keep storage/payload lightweight
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_WIDTH = 1200; // 1200px is more than enough for gallery previews
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(reader.result as string);
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(dataUrl);
+        };
+        img.onerror = () => {
+          resolve(reader.result as string);
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   // CMS Photo Upload/Paste Help logic
   const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
-        }
-      };
-      reader.readAsDataURL(file);
+      compressImage(file).then(compressed => {
+        setPhotoForm(prev => ({ ...prev, imageUrl: compressed }));
+      });
     }
   };
 
@@ -159,13 +194,9 @@ export default function AdminCMS({
         const file = items[i].getAsFile();
         if (file) {
           e.preventDefault();
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (event.target?.result) {
-              setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
-            }
-          };
-          reader.readAsDataURL(file);
+          compressImage(file).then(compressed => {
+            setPhotoForm(prev => ({ ...prev, imageUrl: compressed }));
+          });
           break;
         }
       }
@@ -180,13 +211,9 @@ export default function AdminCMS({
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setPhotoForm(prev => ({ ...prev, imageUrl: event.target?.result as string }));
-        }
-      };
-      reader.readAsDataURL(file);
+      compressImage(file).then(compressed => {
+        setPhotoForm(prev => ({ ...prev, imageUrl: compressed }));
+      });
     }
   };
 

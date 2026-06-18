@@ -25,17 +25,52 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
   const [formDescription, setFormDescription] = useState('');
   const [formImageUrl, setFormImageUrl] = useState('');
 
+  // Compress image before draft saving to keep local storage lightweight
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_WIDTH = 1200; // 1200px is more than enough for gallery previews
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(reader.result as string);
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(dataUrl);
+        };
+        img.onerror = () => {
+          resolve(reader.result as string);
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   // File, Drag & Drop and Clipboard Paste logic
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormImageUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      compressImage(file).then(compressed => {
+        setFormImageUrl(compressed);
+      });
     }
   };
 
@@ -46,13 +81,9 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
         const file = items[i].getAsFile();
         if (file) {
           e.preventDefault();
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (event.target?.result) {
-              setFormImageUrl(event.target.result as string);
-            }
-          };
-          reader.readAsDataURL(file);
+          compressImage(file).then(compressed => {
+            setFormImageUrl(compressed);
+          });
           break;
         }
       }
@@ -67,13 +98,9 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormImageUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      compressImage(file).then(compressed => {
+        setFormImageUrl(compressed);
+      });
     }
   };
 
