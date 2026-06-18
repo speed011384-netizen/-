@@ -12,7 +12,7 @@ import { Review, GalleryPhoto, SiteConfig } from '../types';
 import menzpetBanner from '../assets/images/menzpet_banner_1781229718829.jpg';
 import menzpetBannerWithCat from '../assets/images/menzpet_banner_with_cat_1781445861262.jpg';
 import menzpetBannerSmallDog from '../assets/images/menzpet_banner_small_dog_1781446007378.jpg';
-import menzpetAirportBanner from '../assets/images/menzpet_airport_banner_logo_1781703921038.jpg';
+import menzpetAirportBanner from '../assets/images/menzpet_airport_banner_logo_1781703921038_1781789239517.jpg';
 import menzpetIllustrationBanner from '../assets/images/menzpet_illustration_banner_1781703701586.jpg';
 
 const bannerSlides = [
@@ -59,7 +59,12 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
         // Clean up or replace old stale images with the new logo-optimized airport banner
         const migrated = parsed.map((slide: any) => {
           if (!slide || !slide.image) return null;
-          if (slide.image && (slide.image.includes('menzpet_airport_banner_1781703681823') || slide.image === '/src/assets/images/menzpet_airport_banner_1781703681823.jpg')) {
+          if (slide.image && (
+            slide.image.includes('menzpet_airport_banner_1781703681823') || 
+            slide.image.includes('menzpet_airport_banner_logo_1781703921038') ||
+            slide.image === '/src/assets/images/menzpet_airport_banner_1781703681823.jpg' ||
+            slide.image === '/src/assets/images/menzpet_airport_banner_logo_1781703921038.jpg'
+          )) {
             return {
               ...slide,
               image: menzpetAirportBanner,
