@@ -67,15 +67,7 @@ export default function AdminCMS({
 
   // Handlers for general configurations
   const handleSaveSiteConfig = () => {
-    const lockedDraft = {
-      ...siteDraft,
-      naverBlogUrl: siteConfig.naverBlogUrl || 'https://blog.naver.com/speed011384',
-      naverTalktalkUrl: siteConfig.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji',
-      instagramUrl: siteConfig.instagramUrl || 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3',
-      naverTvUrl: siteConfig.naverTvUrl || 'https://tv.naver.com/',
-      kakaoChannelUrl: siteConfig.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG',
-    };
-    onUpdateSiteConfig(lockedDraft);
+    onUpdateSiteConfig(siteDraft);
     triggerNotification('사업 정보 및 사이트 메인 설정이 실시간 반영되었습니다. 💚');
   };
 
@@ -252,7 +244,7 @@ export default function AdminCMS({
         imageUrl: photoForm.imageUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
       };
       updatedPhotos = [newPhoto, ...photos];
-      triggerNotification('운행 승무 임무 사진이 포토갤러리에 실시간 등재 완료되었습니다. 🟢');
+      triggerNotification('운행 사진이 포토갤러리에 실시간 등재 완료되었습니다. 🟢');
     }
 
     onUpdatePhotos(updatedPhotos);
@@ -304,7 +296,7 @@ export default function AdminCMS({
             실시간 원격 콘텐츠 및 요금 관리 시스템
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1 leading-relaxed">
-            관리자 승인 모드 하에 상호명, 개인정보 보호 고지, 정밀 최적 요금 수식, 승무 사진전, 실후기 피드백을 실시간 제어할 수 있습니다.
+            관리자 승인 모드 하에 상호명, 개인정보 보호 고지, 정밀 최적 요금 수식, 운행 사진전, 실후기 피드백을 실시간 제어할 수 있습니다.
           </p>
         </div>
         <div className="flex gap-2">
@@ -471,59 +463,64 @@ export default function AdminCMS({
 
                   <div className="sm:col-span-2 pt-4 border-t border-gray-100 mt-2">
                     <h4 className="text-xs font-black text-gray-900 flex items-center gap-1.5 mb-1">
-                      <Shield className="w-3.5 h-3.5 text-brand-green" />
-                      공식 SNS 및 소통 채널 외부 주소 설정 (영구 고정됨 🔒)
+                      <Sparkles className="w-3.5 h-3.5 text-brand-green" />
+                      공식 SNS 및 소통 채널 외부 주소 설정 (바로가기 링크)
                     </h4>
-                    <p className="text-[11px] text-gray-500 mb-3">공식 소통 채널 외부 바로가기 주소는 변경 및 한글 번역 방지를 위해 안전하게 영구 고정(Lock) 처리되었습니다.</p>
+                    <p className="text-[11px] text-gray-500 mb-3">메인 화면에 표시되는 공식 블로그, 상담 톡톡, 인스타, 네이버TV 링크를 직접 변경하실 수 있습니다.</p>
                   </div>
 
-                  <div className="space-y-1.5 opacity-85">
-                    <label className="text-xs font-bold text-gray-400 block flex items-center gap-1">네이버 블로그 URL 주소 <span className="text-[10px] bg-gray-150 px-1.5 py-0.5 rounded text-gray-500 font-normal">고정됨</span></label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">네이버 블로그 URL 주소</label>
                     <input 
                       type="text" 
-                      value={siteConfig.naverBlogUrl || 'https://blog.naver.com/speed011384'}
-                      disabled={true}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-gray-400 cursor-not-allowed"
+                      placeholder="e.g. https://blog.naver.com/..."
+                      value={siteDraft.naverBlogUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, naverBlogUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
 
-                  <div className="space-y-1.5 opacity-85">
-                    <label className="text-xs font-bold text-gray-400 block flex items-center gap-1">네이버 톡톡 URL 주소 <span className="text-[10px] bg-gray-150 px-1.5 py-0.5 rounded text-gray-500 font-normal">고정됨</span></label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">네이버 톡톡 URL 주소</label>
                     <input 
                       type="text" 
-                      value={siteConfig.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji'}
-                      disabled={true}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-gray-400 cursor-not-allowed"
+                      placeholder="e.g. http://talk.naver.com/..."
+                      value={siteDraft.naverTalktalkUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, naverTalktalkUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
 
-                  <div className="space-y-1.5 opacity-85">
-                    <label className="text-xs font-bold text-gray-400 block flex items-center gap-1">인스타그램 URL 주소 <span className="text-[10px] bg-gray-150 px-1.5 py-0.5 rounded text-gray-500 font-normal">고정됨</span></label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">인스타그램 URL 주소</label>
                     <input 
                       type="text" 
-                      value={siteConfig.instagramUrl || 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3'}
-                      disabled={true}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-gray-400 cursor-not-allowed"
+                      placeholder="e.g. https://www.instagram.com/..."
+                      value={siteDraft.instagramUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, instagramUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
 
-                  <div className="space-y-1.5 opacity-85">
-                    <label className="text-xs font-bold text-gray-400 block flex items-center gap-1">네이버 TV URL 주소 <span className="text-[10px] bg-gray-150 px-1.5 py-0.5 rounded text-gray-500 font-normal">고정됨</span></label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">네이버 TV URL 주소</label>
                     <input 
                       type="text" 
-                      value={siteConfig.naverTvUrl || 'https://tv.naver.com/'}
-                      disabled={true}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-gray-400 cursor-not-allowed"
+                      placeholder="e.g. https://tv.naver.com/..."
+                      value={siteDraft.naverTvUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, naverTvUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
 
-                  <div className="space-y-1.5 opacity-85">
-                    <label className="text-xs font-bold text-gray-400 block flex items-center gap-1">카카오톡 채널 URL 주소 <span className="text-[10px] bg-gray-150 px-1.5 py-0.5 rounded text-gray-500 font-normal">고정됨</span></label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-700 block">카카오톡 채널 URL 주소</label>
                     <input 
                       type="text" 
-                      value={siteConfig.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG'}
-                      disabled={true}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono text-gray-400 cursor-not-allowed"
+                      placeholder="e.g. https://pf.kakao.com/..."
+                      value={siteDraft.kakaoChannelUrl || ''}
+                      onChange={(e) => setSiteDraft({ ...siteDraft, kakaoChannelUrl: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono focus:bg-white focus:border-brand-green focus:outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -904,7 +901,7 @@ export default function AdminCMS({
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
                 <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
                   <ImageIcon className="w-5 h-5 text-brand-green bg-brand-green-light p-1 rounded-full" />
-                  {editingPhotoId ? '운행 갤러리 액자 요량수정' : '신규 승무 동행 액자사진 등록'}
+                  {editingPhotoId ? '운행 갤러리 액자 요량수정' : '신규 운행 사진 등록'}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

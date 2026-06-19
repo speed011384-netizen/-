@@ -208,7 +208,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
           Real Drive Gallery
         </span>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-          MANS.PET PETTAXI 안전 승무 사진관
+          MANS.PET PETTAXI 안전 운행 사진관
         </h2>
         <p className="text-sm sm:text-base text-gray-600">
           실시간 살균 방역 차량 내 전용 카시트와 튼튼한 벨트 체결 하에 기쁘게 탑승 중인 아이들 사진입니다.
@@ -221,7 +221,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
             className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-hover text-white px-6 py-3 rounded-2xl text-xs font-extrabold transition-all shadow-sm hover:shadow-md cursor-pointer transform hover:-translate-y-0.5"
           >
             <Plus className="w-4 h-4 text-white" />
-            <span>승무 사진 실시간 추가하기</span>
+            <span>운행 사진 실시간 추가하기</span>
           </button>
         </div>
       </div>
@@ -313,7 +313,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
         ))}
         {filteredPhotos.length === 0 && (
           <div className="col-span-full py-16 text-center border-2 border-dashed border-gray-200 rounded-3xl space-y-3">
-            <p className="text-sm font-bold text-gray-400">등록된 승무 사진이 존재하지 않습니다.</p>
+            <p className="text-sm font-bold text-gray-400">등록된 운행 사진이 존재하지 않습니다.</p>
             {isAdminMode && (
               <button
                 onClick={handleOpenAdd}
@@ -365,7 +365,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="rounded-3xl overflow-hidden border-2 border-white/10 max-h-[70vh] bg-neutral-900 max-w-lg md:max-w-2xl"
+                className="rounded-3xl overflow-hidden border-2 border-white/10 max-h-[80vh] bg-neutral-900 max-w-lg md:max-w-2xl"
               >
                 <img
                   src={filteredPhotos[selectedPhotoIndex].imageUrl}
@@ -374,44 +374,6 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
                   referrerPolicy="no-referrer"
                 />
               </motion.div>
-
-              {/* Image Explanations Box */}
-              <div className="text-center space-y-2.5 max-w-md bg-stone-900/90 p-5 rounded-2xl border border-white/10 mt-2 w-full">
-                <span className="text-[10px] bg-brand-yellow text-gray-950 font-black px-2.5 py-0.5 rounded uppercase">
-                  {filteredPhotos[selectedPhotoIndex].category === 'dog' ? '강아지 케어' : filteredPhotos[selectedPhotoIndex].category === 'cat' ? '고양이 케어' : '특수 소형 동물'}
-                </span>
-                <h4 className="font-extrabold text-base md:text-lg text-white">
-                  {filteredPhotos[selectedPhotoIndex].title}
-                </h4>
-                <p className="text-xs text-stone-300 font-semibold leading-relaxed">
-                  {filteredPhotos[selectedPhotoIndex].description}
-                </p>
-
-                <div className="flex gap-2 justify-center pt-2">
-                  <a
-                    href="http://talk.naver.com/profile/w4pxji"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      setSelectedPhotoIndex(null);
-                    }}
-                    className="flex items-center gap-1.5 bg-[#03c75a] hover:bg-[#02b350] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors cursor-pointer"
-                  >
-                    <MessageCircle className="w-4 h-4 fill-white text-white" />
-                    <span>이 기사님 매칭 동승 문의</span>
-                  </a>
-
-                  {isAdminMode && (
-                    <button
-                      onClick={() => handleOpenEdit(filteredPhotos[selectedPhotoIndex!])}
-                      className="flex items-center gap-1.5 bg-stone-800 hover:bg-stone-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-white/15 transition-colors"
-                    >
-                      <Edit className="w-3.5 h-3.5 text-brand-yellow" />
-                      <span>글자 변경</span>
-                    </button>
-                  )}
-                </div>
-              </div>
 
             </div>
           </div>
@@ -433,7 +395,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
                 <div className="flex items-center gap-2">
                   <Edit className="w-5 h-5" />
                   <h3 className="font-extrabold text-base md:text-lg">
-                    {isAddMode ? '새 승무 사진 등록' : '사진 설명 및 글자 수정'}
+                    {isAddMode ? '새 운행 사진 등록' : '사진 설명 및 글자 수정'}
                   </h3>
                 </div>
                 <button 
@@ -618,7 +580,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
           <div className="space-y-1.5 text-left">
             <h4 className="font-extrabold text-sm text-gray-900">운행 사진 촬영 및 프라이빗 개인 보안 안내</h4>
             <p className="text-xs text-gray-600 leading-relaxed">
-              본 갤러리에 업로드된 모든 반려동물 주행 승무 사진은 **보호자님의 명확한 사전 동의(서면 또는 카톡동의)** 하에 촬영되었으며, 
+              본 갤러리에 업로드된 모든 반려동물 주행 운행 사진은 **보호자님의 명확한 사전 동의(서면 또는 카톡동의)** 하에 촬영되었으며, 
               외부에 아이들의 초상권을 침해하지 않도록 안전 수칙 내에서 게재하고 있습니다. 
               내 아이 단독 등하원 시에 실시간으로 공유 드리는 안심 관제 샷 또한 타인에게 절대 공유되지 않는 프라이빗 1:1 보장 안전 보관을 준수합니다.
             </p>

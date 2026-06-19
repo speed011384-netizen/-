@@ -125,9 +125,15 @@ export default function FareCalculator({ fareConfig, siteConfig }: FareCalculato
                     </li>
                   </ul>
                 </div>
-                <p className="text-[9.5px] text-gray-400 leading-normal font-medium">
-                  ※ 기사님 배차 상황에 따라 일부 지역은 운행이 제한될 수 있습니다.
-                </p>
+                <div className="space-y-1.5 pt-2 border-t border-orange-150/50">
+                  <p className="text-[10.5px] text-emerald-700 font-extrabold leading-normal flex items-start gap-1">
+                    <span className="text-emerald-500">💚</span>
+                    <span>장거리 예약은 전화나문자 카톡으로 문의주세요</span>
+                  </p>
+                  <p className="text-[9px] text-gray-400 leading-normal font-medium pl-4">
+                    ※ 기사님 배차 상황에 따라 일부 지역은 운행이 제한될 수 있습니다.
+                  </p>
+                </div>
               </div>
 
               {/* 기본요금 안내 (Center) */}
