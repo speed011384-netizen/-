@@ -58,12 +58,8 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Self-heal old Instagram links stored in user's browser cache
-        if (parsed && (
-          parsed.instagramUrl === 'https://www.instagram.com/menzpet_taxi/' || 
-          !parsed.instagramUrl
-        )) {
-          parsed.instagramUrl = 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3';
+        if (parsed && (parsed.naverTalktalkUrl === 'https://talk.naver.com/' || !parsed.naverTalktalkUrl)) {
+          parsed.naverTalktalkUrl = 'http://talk.naver.com/profile/w4pxji';
           localStorage.setItem('manspet_site_config', JSON.stringify(parsed));
         }
         return parsed;
@@ -124,22 +120,20 @@ export default function App() {
     
     // Directly launch Naver TalkTalk externally
     const link = document.createElement('a');
-    link.href = 'https://talk.naver.com/';
+    link.href = 'http://talk.naver.com/profile/w4pxji';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.click();
   };
 
-  // Reset function passed to CMS
+  // Reset function passed to CMS ('manspet_gallery_photos' is fully protected from rolback reset)
   const handleResetToDefault = () => {
     localStorage.removeItem('manspet_site_config');
     localStorage.removeItem('manspet_fare_config');
     localStorage.removeItem('menzpet_reviews');
-    localStorage.removeItem('manspet_gallery_photos');
     setSiteConfig(DEFAULT_SITE_CONFIG);
     setFareConfig(DEFAULT_FARE_CONFIG);
     setReviews(INITIAL_REVIEWS);
-    setPhotos(GALLERY_PHOTOS);
   };
 
   const renderActiveScreen = () => {
@@ -271,7 +265,7 @@ export default function App() {
             <div className="flex gap-4">
               <button onClick={() => setActiveTab('guide')} className="hover:underline">이용약관</button>
               <span>|</span>
-              <a href={siteConfig.naverTalktalkUrl || "https://talk.naver.com/"} target="_blank" rel="noopener noreferrer" className="hover:underline text-emerald-500">네이버 톡톡 상담</a>
+              <a href={siteConfig.naverTalktalkUrl || "http://talk.naver.com/profile/w4pxji"} target="_blank" rel="noopener noreferrer" className="hover:underline text-emerald-500">네이버 톡톡 상담</a>
               <span>|</span>
               <a href={siteConfig.kakaoChannelUrl || "https://pf.kakao.com/_xgpxkxbG"} target="_blank" rel="noopener noreferrer" className="hover:underline text-yellow-500">카카오톡 채널 상담</a>
               <span>|</span>

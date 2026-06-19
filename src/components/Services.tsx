@@ -119,7 +119,7 @@ export default function Services({ setActiveTab }: ServicesProps) {
               실시간 예상 요금 계산
             </button>
             <a
-              href="https://talk.naver.com/"
+              href="http://talk.naver.com/profile/w4pxji"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto bg-[#03c75a] text-white hover:bg-[#02b350] px-6 py-3.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
@@ -184,7 +184,7 @@ export default function Services({ setActiveTab }: ServicesProps) {
               </div>
             </div>
             <a
-              href="https://talk.naver.com/"
+              href="http://talk.naver.com/profile/w4pxji"
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full bg-[#03c75a]/10 hover:bg-[#03c75a]/15 text-[#03c75a] py-2.5 rounded-xl text-xs font-bold transition-all text-center cursor-pointer"

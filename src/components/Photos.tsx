@@ -14,8 +14,8 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
   const [activeCategory, setActiveCategory] = useState<'all' | 'dog' | 'cat' | 'special'>('all');
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
-  // Admin Editing States
-  const [isAdminMode, setIsAdminMode] = useState(false);
+  // Admin Editing States (Permanently unlocked by user preference for direct delete/edit management)
+  const [isAdminMode, setIsAdminMode] = useState(true);
   const [editingPhoto, setEditingPhoto] = useState<GalleryPhoto | null>(null);
   const [isAddMode, setIsAddMode] = useState(false);
 
@@ -214,38 +214,15 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
           실시간 살균 방역 차량 내 전용 카시트와 튼튼한 벨트 체결 하에 기쁘게 탑승 중인 아이들 사진입니다.
         </p>
 
-        {/* Dynamic Admin/Editing System Toggle block */}
-        <div className="flex justify-center flex-wrap gap-2.5 pt-2" id="gallery-admin-options-ribbon">
+        {/* Direct Photo Management Ribbon (Permanently Enabled) */}
+        <div className="flex justify-center pt-2" id="gallery-admin-options-ribbon">
           <button
-            onClick={() => setIsAdminMode(!isAdminMode)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all border shadow-2xs cursor-pointer ${
-              isAdminMode
-                ? 'bg-rose-500 text-white border-rose-600 hover:bg-rose-600'
-                : 'bg-white text-gray-700 hover:text-gray-950 border-gray-250 hover:bg-gray-50'
-            }`}
+            onClick={handleOpenAdd}
+            className="flex items-center gap-2 bg-brand-green hover:bg-brand-green-hover text-white px-6 py-3 rounded-2xl text-xs font-extrabold transition-all shadow-sm hover:shadow-md cursor-pointer transform hover:-translate-y-0.5"
           >
-            <span>{isAdminMode ? '✍️ 편집 모드 종료' : '✍️ 사진/설명 편집 기능 켜기'}</span>
+            <Plus className="w-4 h-4 text-white" />
+            <span>승무 사진 실시간 추가하기</span>
           </button>
-
-          {isAdminMode && (
-            <div className="flex gap-2 animate-fadeIn">
-              <button
-                onClick={handleOpenAdd}
-                className="flex items-center gap-1.5 bg-brand-green hover:bg-brand-green-hover text-white px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all shadow-2xs cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>사진 등록</span>
-              </button>
-              <button
-                onClick={handleResetGallery}
-                className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all shadow-2xs cursor-pointer"
-                title="기본 설정으로 사진관 초기화"
-              >
-                <RefreshCw className="w-3 h-3" />
-                <span>사진첩 복원</span>
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -412,7 +389,7 @@ export default function Photos({ setActiveTab, photos, onUpdatePhotos }: PhotosP
 
                 <div className="flex gap-2 justify-center pt-2">
                   <a
-                    href="https://talk.naver.com/"
+                    href="http://talk.naver.com/profile/w4pxji"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {

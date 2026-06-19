@@ -13,7 +13,7 @@ interface FareCalculatorProps {
 
 export default function FareCalculator({ fareConfig, siteConfig }: FareCalculatorProps) {
   const phoneNum = siteConfig?.phone || '010-7644-0799';
-  const talkUrl = siteConfig?.naverTalktalkUrl || 'https://talk.naver.com/';
+  const talkUrl = siteConfig?.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji';
   const kakaoUrl = siteConfig?.kakaoChannelUrl || 'https://pf.kakao.com/_xgpxkxbG';
 
   return (

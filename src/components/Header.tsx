@@ -93,7 +93,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
 
           {/* Naver TalkTalk (Green) */}
           <a
-            href={siteConfig.naverTalktalkUrl || 'https://talk.naver.com/'}
+            href={siteConfig.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[#03c75a] hover:bg-[#02b350] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
@@ -154,7 +154,7 @@ export default function Header({ activeTab, setActiveTab, siteConfig }: HeaderPr
               <span>전화 연결</span>
             </a>
             <a
-              href={siteConfig.naverTalktalkUrl || 'https://talk.naver.com/'}
+              href={siteConfig.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji'}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => {

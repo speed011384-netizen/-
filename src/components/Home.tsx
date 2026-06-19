@@ -84,7 +84,16 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     }
     return bannerSlides;
   });
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(() => {
+    const saved = localStorage.getItem('manspet_current_banner_index');
+    if (saved) {
+      try {
+        const val = parseInt(saved, 10);
+        if (!isNaN(val) && val >= 0) return val;
+      } catch (e) {}
+    }
+    return 0;
+  });
   const [isEditingBanners, setIsEditingBanners] = useState(false);
 
   // Sync to localStorage with safety blocks
@@ -98,6 +107,11 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     }
   }, [slides]);
 
+  // Sync active slide index to localStorage to preserve selected image on refresh/reboot
+  useEffect(() => {
+    localStorage.setItem('manspet_current_banner_index', currentBannerIndex.toString());
+  }, [currentBannerIndex]);
+
   // Auto-rotate banner slides every 3 seconds
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -106,6 +120,13 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     }, 3000);
     return () => clearInterval(timer);
   }, [slides.length]);
+
+  // Keep currentBannerIndex within valid range if slides count changes
+  useEffect(() => {
+    if (currentBannerIndex >= slides.length && slides.length > 0) {
+      setCurrentBannerIndex(slides.length - 1);
+    }
+  }, [slides, currentBannerIndex]);
 
   // Compress image before storage to prevent QuotaExceededError and keep performance high
   const compressImage = (file: File): Promise<string> => {
@@ -340,7 +361,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
               {/* Naver TalkTalk CTA */}
               <a
-                href={siteConfig?.naverTalktalkUrl || "https://talk.naver.com/"}
+                href={siteConfig?.naverTalktalkUrl || "http://talk.naver.com/profile/w4pxji"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3.5 bg-[#03c75a] hover:bg-[#02b350] text-white px-6 py-4.5 rounded-2xl font-bold shadow-lg shadow-emerald-500/10 hover:shadow-xl transition-all cursor-pointer group flex-1"
@@ -414,7 +435,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
 
             {/* 2. 네이버 톡톡 (Naver TalkTalk) */}
             <motion.a
-              href={siteConfig?.naverTalktalkUrl || 'https://talk.naver.com/'}
+              href={siteConfig?.naverTalktalkUrl || 'http://talk.naver.com/profile/w4pxji'}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4, scale: 1.02 }}

@@ -241,7 +241,7 @@ export const DEFAULT_SITE_CONFIG = {
   phone: '010-7644-0799',
   privacyOfficer: '박태웅',
   naverBlogUrl: 'https://blog.naver.com/speed011384',
-  naverTalktalkUrl: 'https://talk.naver.com/',
+  naverTalktalkUrl: 'http://talk.naver.com/profile/w4pxji',
   instagramUrl: 'https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3',
   naverTvUrl: 'https://tv.naver.com/',
   kakaoChannelUrl: 'https://pf.kakao.com/_xgpxkxbG',
