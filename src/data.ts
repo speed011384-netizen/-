@@ -259,3 +259,27 @@ export const DEFAULT_FARE_CONFIG = {
   outOfSeoulSurcharge: 5000,
   waitingFarePer10Min: 1000
 };
+
+export const INITIAL_BANNER_SLIDES = [
+  {
+    image: "DEFAULT_ILLUSTRATION",
+    alt: "맨즈펫 펫택시 안심 수송 서비스 - 귀여운 반려견 일러스트 테마"
+  },
+  {
+    image: "DEFAULT_AIRPORT",
+    alt: "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
+  },
+  {
+    image: "DEFAULT_BANNER",
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 골든 리트리버"
+  },
+  {
+    image: "DEFAULT_CAT",
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 강아지와 고양이 동행"
+  },
+  {
+    image: "DEFAULT_SMALL_DOG",
+    alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 귀여운 반려견"
+  }
+];
+

@@ -1,0 +1,171 @@
+{
+  "siteConfig": {
+    "companyName": "MANS.PET PETTAXI",
+    "ceoName": "박태웅",
+    "address": "경기도 고양시 삼송동 50-76 (고양 삼송 본부)",
+    "businessNumber": "347-49-00344",
+    "mailOrderNumber": "2026-고양삼송-0811호",
+    "animalLicenseNumber": "제 3910000-014-0002 호",
+    "phone": "010-7644-0799",
+    "privacyOfficer": "박태웅",
+    "naverBlogUrl": "https://blog.naver.com/speed011384",
+    "naverTalktalkUrl": "http://talk.naver.com/profile/w4pxji",
+    "instagramUrl": "https://www.instagram.com/pet_taxi_mans.pet?igsh=bDJldnFqdnc0bzl3",
+    "naverTvUrl": "https://tv.naver.com/",
+    "kakaoChannelUrl": "https://pf.kakao.com/_xgpxkxbG",
+    "fareTableImageUrl": ""
+  },
+  "fareConfig": {
+    "baseFare": 8000,
+    "perKmFare": 1000,
+    "minFare": 15000,
+    "minFareDistanceLimit": 7,
+    "petCareSurcharge": 5000,
+    "viaSurcharge": 5000,
+    "nightSurcharge": 5000,
+    "outOfSeoulSurcharge": 5000,
+    "waitingFarePer10Min": 1000
+  },
+  "reviews": [
+    {
+      "id": "rev-1",
+      "author": "이*정",
+      "petName": "쿠키 (골든리트리버)",
+      "petType": "dog",
+      "rating": 5,
+      "content": "평택에서 서울 대학병원까지 대형견 데리고 첫 통원이라 너무 조마조마했는데 기사님이 정말 따뜻하고 친절하게 맞아주셨어요. 차량이 엄청 넓고 대형견 전용 쿠션 매트에 하네스 전용 안전벨트까지 단단히 채워주셔서 가는 동안 쿠키가 누워서 완전 편하게 갔네요. 친절한 운전과 배려에 너무 감사해서 병원 갈 때마다 무조건 manspet taxi만 이용합니다! 강추해요. 😍",
+      "date": "2026-06-11",
+      "imageUrl": "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+      "id": "rev-2",
+      "author": "최*민",
+      "petName": "나비 (코리안 쇼트헤어)",
+      "petType": "cat",
+      "rating": 5,
+      "content": "고양이라 켄넬 안에만 들어가도 울고불고 예민보스인데 차 내부 시트나 공기가 너무 쾌적하고 냄새가 하나도 안 나서 그런지 나비가 금방 진정했어요. 기사님이 무소음 정속 주행으로 조심스럽게 운행해주신 덕분입니다. 출발 전후로 천연 연무 피톤치드 세척하시는 모습 보고 더 믿임이 갔어요. 고양이 배려 이동장 체결 고리 최고네요! 🙏",
+      "date": "2026-06-09",
+      "imageUrl": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+      "id": "rev-3",
+      "author": "정*아",
+      "petName": "하루 (포메라니안)",
+      "petType": "dog",
+      "rating": 5,
+      "content": "바쁜 직장인이라 아이 미용실 하원만 비동승 단독이동 서비스로 부탁드렸는데 걱정이 무색하게 완벽했어요! 기사님이 픽업하실 때부터 미용실 도착, 그리고 인계 완료 순간까지 안심 실시간 카톡으로 사진이랑 상태 메시지를 바로 보내주셨습니다. 하루가 차량 안에서 활짝 웃고 있는 사진 보고 너무 안심했네요. 믿고 맡길 수 있는 펫택시입니다! 💚",
+      "date": "2026-06-07",
+      "imageUrl": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+      "id": "rev-4",
+      "author": "김*현",
+      "petName": "두부 (비숑 프리제)",
+      "petType": "dog",
+      "rating": 5,
+      "content": "당일 오전에 급하게 대학병원 예약이 잡혀 1시간 전에 긴급 수배 전화를 드렸었는데, 공차 대기 중이시던 베테랑 기사님을 엄청 빠르게 안심 매칭해서 보내주셨어요! 시간 칼같이 맞춰 와주시고, 아이 카시트도 아주 포근하고 깨끗하게 세팅되어 있었습니다. 7km 안 되는 비교적 단거리였는데도 최저요금제로 완벽한 수송을 해주셔서 요금이 하나도 아깝지 않았습니다.",
+      "date": "2026-06-04",
+      "imageUrl": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+      "id": "rev-5",
+      "author": "황*인",
+      "petName": "구름이 (토이푸들)",
+      "petType": "dog",
+      "rating": 5,
+      "content": "왕복으로 병원 대기 서비스를 처음 예약해 보았는데 진짜 대대대만족입니다. 병원 진료가 혼잡해서 예약시간보다 35분 대기가 길어졌는데도 싫은 내색 하나 없이 친절히 대기해 주시고 아이 컨디션을 꼼꼼하게 같이 챙겨 주셨어요. 투명하고 정직하게 30분 무료 대기 적용에 추가 대기만 깔끔하게 정산해 주셨고 운전 실력이 베스트 드라이버이십니다. 번창하세요!",
+      "date": "2026-05-31",
+      "imageUrl": "https://images.unsplash.com/photo-1537151608828-ea2b117b6281?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+      "id": "rev-6",
+      "author": "윤*영",
+      "petName": "몽이 (페르시안)",
+      "petType": "cat",
+      "rating": 5,
+      "content": "이사 일정으로 경기 안성외곽에서 서울 마포까지 장거리 펫택시를 불렀습니다. 거리가 꽤 되어서 걱정 수치가 가득했는데 차안에 냄새도 없고 은은한 연무가 돌아 탑승 내내 아주 공기가 깨끗했어요. 네이버 추천 최적길 안내에 부합되게 속임수 없이 합리적으로 최종 요금을 산정해 주셔서 기쁜 마음으로 결제했네요. 아이도 멀미 없이 무사 도착했습니다. 강력추천합니다!",
+      "date": "2026-05-25",
+      "imageUrl": "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=400"
+    }
+  ],
+  "photos": [
+    {
+      "id": "photo-1",
+      "category": "dog",
+      "title": "비숑 구름이 병원 무사히 도착",
+      "description": "뒷좌석 방역 카시트에서 기분 좋게 안전 이동 중인 비숑 구름이",
+      "imageUrl": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-2",
+      "category": "dog",
+      "title": "강릉 장거리 왕복 운행 중 휴게소",
+      "description": "장거리 여행을 위한 전용 벨트 장착 후 해방감 넘치는 미소",
+      "imageUrl": "https://images.unsplash.com/photo-1537151608828-ea2b117b6281?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-3",
+      "category": "cat",
+      "title": "안전 캐리어 벨트에 탑승한 나비",
+      "description": "고양이 전용 프라이빗 격막형 카시트로 돌발 움직임 방지",
+      "imageUrl": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-4",
+      "category": "dog",
+      "title": "골든리트리버 대형견도 편안하게",
+      "description": "대형 SUV 넓직한 트렁크 전용 쿠션 매트로 기분 좋은 승차감 제공",
+      "imageUrl": "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-5",
+      "category": "dog",
+      "title": "포메라니안 뽀미 일상 나들이길",
+      "description": "바쁜 견주님을 대신해 성실하게 이동을 돕는 단골 뽀미",
+      "imageUrl": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-6",
+      "category": "cat",
+      "title": "러시안블루 카이의 안심 이동",
+      "description": "적재함 내 연무 살균기가 실시간 쾌적한 피쉬 아로마 숲 환경을 제공합니다",
+      "imageUrl": "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-7",
+      "category": "special",
+      "title": "기니피그 꾸끼 정밀 진료길 동행",
+      "description": "소형 특수동물을 위한 맞춤형 미니 켄넬 충격 예방 고정 패드",
+      "imageUrl": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&q=80&w=500"
+    },
+    {
+      "id": "photo-8",
+      "category": "special",
+      "title": "애완토끼 초코의 미용실 나들이",
+      "description": "차량 흔들림을 주시하며 속도 제어로 스트레스 제로 이동 완수",
+      "imageUrl": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500"
+    }
+  ],
+  "slides": [
+    {
+      "image": "DEFAULT_ILLUSTRATION",
+      "alt": "맨즈펫 펫택시 안심 수송 서비스 - 귀여운 반려견 일러스트 테마"
+    },
+    {
+      "image": "DEFAULT_AIRPORT",
+      "alt": "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
+    },
+    {
+      "image": "DEFAULT_BANNER",
+      "alt": "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 골든 리트리버"
+    },
+    {
+      "image": "DEFAULT_CAT",
+      "alt": "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 강아지와 고양이 동행"
+    },
+    {
+      "image": "DEFAULT_SMALL_DOG",
+      "alt": "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 귀여운 반려견"
+    }
+  ]
+}

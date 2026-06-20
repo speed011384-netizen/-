@@ -369,7 +369,7 @@ export default function AdminCMS({
               }`}
             >
               <ImageIcon className="w-4 h-4" />
-              <span>수송 갤러리 사진 데이터</span>
+              <span>탑승한 아이들 사진 데이터</span>
             </button>
           </div>
 
@@ -1009,14 +1009,14 @@ export default function AdminCMS({
                     className="flex items-center gap-1 bg-brand-green hover:bg-brand-green-hover text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-all"
                   >
                     <Save className="w-3.5 h-3.5 fill-white text-white" />
-                    {editingPhotoId ? '액자 사진 편집 변경' : '수송 사진 전시장 발행 고시'}
+                    {editingPhotoId ? '액자 사진 편집 변경' : '탑승한 아이들 사진 등록'}
                   </button>
                 </div>
               </div>
 
               {/* Grid visual list */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
-                <h3 className="text-base font-black text-gray-900">수송 갤러리 기사 사진 명부 ({photos.length}매 고시인쇄)</h3>
+                <h3 className="text-base font-black text-gray-900">탑승한 아이들 사진 명부 ({photos.length}매 고시인쇄)</h3>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {photos.map((p) => (

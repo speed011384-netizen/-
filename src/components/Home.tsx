@@ -7,7 +7,7 @@ import {
   Trash2, RotateCcw, X
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { SERVICES, ADVANTAGES, INITIAL_REVIEWS, GALLERY_PHOTOS } from '../data';
+import { SERVICES, ADVANTAGES, INITIAL_REVIEWS, GALLERY_PHOTOS, INITIAL_BANNER_SLIDES } from '../data';
 import { Review, GalleryPhoto, SiteConfig } from '../types';
 import menzpetBanner from '../assets/images/menzpet_banner_1781229718829.jpg';
 import menzpetBannerWithCat from '../assets/images/menzpet_banner_with_cat_1781445861262.jpg';
@@ -15,25 +15,37 @@ import menzpetBannerSmallDog from '../assets/images/menzpet_banner_small_dog_178
 import menzpetAirportBanner from '../assets/images/menzpet_airport_banner_logo_1781703921038_1781789239517.jpg';
 import menzpetIllustrationBanner from '../assets/images/menzpet_illustration_banner_1781703701586.jpg';
 
+const DEFAULT_BANNER_MAP: Record<string, string> = {
+  "DEFAULT_ILLUSTRATION": menzpetIllustrationBanner,
+  "DEFAULT_AIRPORT": menzpetAirportBanner,
+  "DEFAULT_BANNER": menzpetBanner,
+  "DEFAULT_CAT": menzpetBannerWithCat,
+  "DEFAULT_SMALL_DOG": menzpetBannerSmallDog
+};
+
+const resolveImageSrc = (img: string) => {
+  return DEFAULT_BANNER_MAP[img] || img;
+};
+
 const bannerSlides = [
   {
-    image: menzpetIllustrationBanner,
+    image: "DEFAULT_ILLUSTRATION",
     alt: "맨즈펫 펫택시 안심 수송 서비스 - 귀여운 반려견 일러스트 테마"
   },
   {
-    image: menzpetAirportBanner,
+    image: "DEFAULT_AIRPORT",
     alt: "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
   },
   {
-    image: menzpetBanner,
+    image: "DEFAULT_BANNER",
     alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 골든 리트리버"
   },
   {
-    image: menzpetBannerWithCat,
+    image: "DEFAULT_CAT",
     alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 강아지와 고양이 동행"
   },
   {
-    image: menzpetBannerSmallDog,
+    image: "DEFAULT_SMALL_DOG",
     alt: "반려동물 전용 안전 이동 서비스 MANS.PET PETTAXI - 귀여운 반려견"
   }
 ];
@@ -43,47 +55,15 @@ interface HomeProps {
   reviews: Review[];
   photos?: GalleryPhoto[];
   siteConfig?: SiteConfig;
+  slides: any[];
+  onUpdateSlides: (updated: any[]) => void;
 }
 
-export default function Home({ setActiveTab, reviews, photos = [], siteConfig }: HomeProps) {
+export default function Home({ setActiveTab, reviews, photos = [], siteConfig, slides, onUpdateSlides }: HomeProps) {
   const [activePhotoCategory, setActivePhotoCategory] = useState<'all' | 'dog' | 'cat' | 'special'>('all');
-  const [slides, setSlides] = useState(() => {
-    const saved = localStorage.getItem('manspet_banner_slides');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (!Array.isArray(parsed) || parsed.length === 0) {
-          return bannerSlides;
-        }
+  
+  const setSlides = onUpdateSlides;
 
-        // Clean up or replace old stale images with the new logo-optimized airport banner
-        const migrated = parsed.map((slide: any) => {
-          if (!slide || !slide.image) return null;
-          if (slide.image && (
-            slide.image.includes('menzpet_airport_banner_1781703681823') || 
-            slide.image.includes('menzpet_airport_banner_logo_1781703921038') ||
-            slide.image === '/src/assets/images/menzpet_airport_banner_1781703681823.jpg' ||
-            slide.image === '/src/assets/images/menzpet_airport_banner_logo_1781703921038.jpg'
-          )) {
-            return {
-              ...slide,
-              image: menzpetAirportBanner,
-              alt: "맨즈펫 프리미엄 공항 펫택시 서비스 - 럭셔리 픽업 앤 샌딩 대기 수송 (로고 최적화 완료)"
-            };
-          }
-          return slide;
-        }).filter(Boolean);
-
-        if (migrated.length === 0) {
-          return bannerSlides;
-        }
-        return migrated;
-      } catch (err) {
-        return bannerSlides;
-      }
-    }
-    return bannerSlides;
-  });
   const [currentBannerIndex, setCurrentBannerIndex] = useState(() => {
     const saved = localStorage.getItem('manspet_current_banner_index');
     if (saved) {
@@ -95,17 +75,6 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     return 0;
   });
   const [isEditingBanners, setIsEditingBanners] = useState(false);
-
-  // Sync to localStorage with safety blocks
-  useEffect(() => {
-    if (slides && slides.length > 0) {
-      try {
-        localStorage.setItem('manspet_banner_slides', JSON.stringify(slides));
-      } catch (err) {
-        console.warn('Local storage quota exceeded. Saving in session state only.', err);
-      }
-    }
-  }, [slides]);
 
   // Sync active slide index to localStorage to preserve selected image on refresh/reboot
   useEffect(() => {
@@ -205,7 +174,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
     try {
       localStorage.removeItem('manspet_banner_slides');
     } catch (e) {}
-    setSlides(bannerSlides);
+    setSlides(INITIAL_BANNER_SLIDES);
     setCurrentBannerIndex(0);
   };
 
@@ -232,7 +201,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                 {slides[currentBannerIndex] ? (
                   <motion.img
                     key={currentBannerIndex}
-                    src={slides[currentBannerIndex].image}
+                    src={resolveImageSrc(slides[currentBannerIndex].image)}
                     alt={slides[currentBannerIndex].alt}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -864,7 +833,7 @@ export default function Home({ setActiveTab, reviews, photos = [], siteConfig }:
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                           <img
-                            src={slide.image}
+                            src={resolveImageSrc(slide.image)}
                             alt={slide.alt}
                             className="w-16 h-9 object-cover rounded-lg border border-gray-200 shrink-0"
                             referrerPolicy="no-referrer"

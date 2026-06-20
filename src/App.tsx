@@ -10,7 +10,8 @@ import AdminCMS from './components/AdminCMS';
 import { Review, Booking, GalleryPhoto, SiteConfig, FareConfig } from './types';
 import { 
   INITIAL_REVIEWS, GALLERY_PHOTOS, 
-  DEFAULT_SITE_CONFIG, DEFAULT_FARE_CONFIG 
+  DEFAULT_SITE_CONFIG, DEFAULT_FARE_CONFIG,
+  INITIAL_BANNER_SLIDES
 } from './data';
 import { PawPrint, Heart, Smartphone } from 'lucide-react';
 
@@ -82,6 +83,54 @@ export default function App() {
     return DEFAULT_FARE_CONFIG;
   });
 
+  const [slides, setSlides] = useState<any[]>(() => {
+    const saved = localStorage.getItem('manspet_banner_slides');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (err) {
+        return INITIAL_BANNER_SLIDES;
+      }
+    }
+    return INITIAL_BANNER_SLIDES;
+  });
+
+  // Load from server-to-client configuration db on startup
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      try {
+        const res = await fetch('/api/all-config');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data) {
+          if (data.reviews) {
+            setReviews(data.reviews);
+            localStorage.setItem('menzpet_reviews', JSON.stringify(data.reviews));
+          }
+          if (data.photos) {
+            setPhotos(data.photos);
+            localStorage.setItem('manspet_gallery_photos', JSON.stringify(data.photos));
+          }
+          if (data.siteConfig) {
+            setSiteConfig(data.siteConfig);
+            localStorage.setItem('manspet_site_config', JSON.stringify(data.siteConfig));
+          }
+          if (data.fareConfig) {
+            setFareConfig(data.fareConfig);
+            localStorage.setItem('manspet_fare_config', JSON.stringify(data.fareConfig));
+          }
+          if (data.slides) {
+            setSlides(data.slides);
+            localStorage.setItem('manspet_banner_slides', JSON.stringify(data.slides));
+          }
+        }
+      } catch (err) {
+        console.warn('Server offline or loading failed. Falling back to local/default data.', err);
+      }
+    };
+    fetchConfigs();
+  }, []);
+
   const [calculatorData, setCalculatorData] = useState<{
     petType: 'dog' | 'cat' | 'special';
     serviceType: string;
@@ -89,6 +138,35 @@ export default function App() {
     options: string[];
     fare: number;
   } | null>(null);
+
+  // Sync payload helper to post state directly onto the server database disk
+  const syncPayload = (
+    nextSiteConfig: SiteConfig,
+    nextFareConfig: FareConfig,
+    nextReviews: Review[],
+    nextPhotos: GalleryPhoto[],
+    nextSlides: any[]
+  ) => {
+    fetch('/api/save-config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        siteConfig: nextSiteConfig,
+        fareConfig: nextFareConfig,
+        reviews: nextReviews,
+        photos: nextPhotos,
+        slides: nextSlides
+      })
+    }).then(res => {
+      if (!res.ok) {
+        console.error('Failed to sync configs with backend server.');
+      }
+    }).catch(err => {
+      console.error('Network sync failure:', err);
+    });
+  };
 
   // Sync state helpers
   const handleAddReview = (newReviewData: Omit<Review, 'id' | 'date'>) => {
@@ -100,6 +178,7 @@ export default function App() {
     const updated = [freshReview, ...reviews];
     setReviews(updated);
     localStorage.setItem('menzpet_reviews', JSON.stringify(updated));
+    syncPayload(siteConfig, fareConfig, updated, photos, slides);
   };
 
   const handleApplyBookingFromCalculator = (data: {
@@ -126,20 +205,40 @@ export default function App() {
     link.click();
   };
 
-  // Reset function passed to CMS ('manspet_gallery_photos' is fully protected from rolback reset)
+  // Reset function passed to CMS
   const handleResetToDefault = () => {
     localStorage.removeItem('manspet_site_config');
     localStorage.removeItem('manspet_fare_config');
     localStorage.removeItem('menzpet_reviews');
+    localStorage.removeItem('manspet_gallery_photos');
+    localStorage.removeItem('manspet_banner_slides');
+    
     setSiteConfig(DEFAULT_SITE_CONFIG);
     setFareConfig(DEFAULT_FARE_CONFIG);
     setReviews(INITIAL_REVIEWS);
+    setPhotos(GALLERY_PHOTOS);
+    setSlides(INITIAL_BANNER_SLIDES);
+
+    syncPayload(DEFAULT_SITE_CONFIG, DEFAULT_FARE_CONFIG, INITIAL_REVIEWS, GALLERY_PHOTOS, INITIAL_BANNER_SLIDES);
   };
 
   const renderActiveScreen = () => {
     switch (activeTab) {
       case 'home':
-        return <Home setActiveTab={setActiveTab} reviews={reviews} photos={photos} siteConfig={siteConfig} />;
+        return (
+          <Home 
+            setActiveTab={setActiveTab} 
+            reviews={reviews} 
+            photos={photos} 
+            siteConfig={siteConfig} 
+            slides={slides}
+            onUpdateSlides={(updatedSlides) => {
+              setSlides(updatedSlides);
+              localStorage.setItem('manspet_banner_slides', JSON.stringify(updatedSlides));
+              syncPayload(siteConfig, fareConfig, reviews, photos, updatedSlides);
+            }}
+          />
+        );
       case 'services':
         return <Services setActiveTab={setActiveTab} />;
       case 'guide':
@@ -161,6 +260,7 @@ export default function App() {
             onUpdatePhotos={(updated: GalleryPhoto[]) => {
               setPhotos(updated);
               localStorage.setItem('manspet_gallery_photos', JSON.stringify(updated));
+              syncPayload(siteConfig, fareConfig, reviews, updated, slides);
             }}
           />
         );
@@ -171,27 +271,44 @@ export default function App() {
             onUpdateSiteConfig={(updated) => {
               setSiteConfig(updated);
               localStorage.setItem('manspet_site_config', JSON.stringify(updated));
+              syncPayload(updated, fareConfig, reviews, photos, slides);
             }}
             fareConfig={fareConfig}
             onUpdateFareConfig={(updated) => {
               setFareConfig(updated);
               localStorage.setItem('manspet_fare_config', JSON.stringify(updated));
+              syncPayload(siteConfig, updated, reviews, photos, slides);
             }}
             reviews={reviews}
             onUpdateReviews={(updated) => {
               setReviews(updated);
               localStorage.setItem('menzpet_reviews', JSON.stringify(updated));
+              syncPayload(siteConfig, fareConfig, updated, photos, slides);
             }}
             photos={photos}
             onUpdatePhotos={(updated) => {
               setPhotos(updated);
               localStorage.setItem('manspet_gallery_photos', JSON.stringify(updated));
+              syncPayload(siteConfig, fareConfig, reviews, updated, slides);
             }}
             onResetToDefault={handleResetToDefault}
           />
         );
       default:
-        return <Home setActiveTab={setActiveTab} reviews={reviews} photos={photos} siteConfig={siteConfig} />;
+        return (
+          <Home 
+            setActiveTab={setActiveTab} 
+            reviews={reviews} 
+            photos={photos} 
+            siteConfig={siteConfig} 
+            slides={slides}
+            onUpdateSlides={(updatedSlides) => {
+              setSlides(updatedSlides);
+              localStorage.setItem('manspet_banner_slides', JSON.stringify(updatedSlides));
+              syncPayload(siteConfig, fareConfig, reviews, photos, updatedSlides);
+            }}
+          />
+        );
     }
   };
 
@@ -251,11 +368,10 @@ export default function App() {
             <div className="lg:col-span-4 space-y-3 bg-neutral-950 p-5 rounded-2xl border border-neutral-800">
               <div className="flex items-center gap-1 text-xs text-brand-green font-bold">
                 <Heart className="w-3.5 h-3.5 fill-brand-green" />
-                <span>안전 수송 서약 고시</span>
+                <span>안전운행 안내</span>
               </div>
               <p className="text-neutral-500 leading-relaxed text-[11px]">
-                "우리 아이들의 소중한 봄날 같은 걸음, MANS.PET PETTAXI가 밤낮없이 수호하겠습니다. 
-                매 회 탑승 전 연무 피톤치드 집중 방역 및 전 차량 대형 카시트 탑승과 동승 가이드 규정을 철저히 이행함을 정직히 고시합니다."
+                "우리 아이들과 보호자님의 안전을 최우선으로 생각합니다. 쾌적한 이동을 위해 매 회 운행 전 천연 피톤치드 연무 소독을 철저히 실시하며, 차량 내 반려동물 전용 안전 카시트 장착 및 안전벨트 체결을 최우선으로 준수하여 목적지까지 편안하고 안전한 운행을 약속드립니다."
               </p>
             </div>
           </div>
